@@ -2,78 +2,166 @@
 @model Baykus.Web.Pages.EmpleadoPages.DetailsModel
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Detalle del empleado";
+
+    var nombreCompleto = $"{Model.Empleado.Nombre} {Model.Empleado.Apellido}";
+    var iniciales = $"{Model.Empleado.Nombre?.FirstOrDefault()}{Model.Empleado.Apellido?.FirstOrDefault()}".ToUpper();
 }
 
-<h1>Details</h1>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h2 class="mb-1 fw-bold">Detalle del empleado</h2>
+        <p class="text-muted mb-0">
+            Consultá la información registrada del perfil seleccionado.
+        </p>
+    </div>
 
-<div>
-    <h4>Empleado</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Empleado.Nombre)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Empleado.Nombre)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Empleado.Apellido)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Empleado.Apellido)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Empleado.Dni)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Empleado.Dni)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Empleado.Email)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Empleado.Email)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Empleado.Telefono)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Empleado.Telefono)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Empleado.Puesto)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Empleado.Puesto)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Empleado.Sector)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Empleado.Sector)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Empleado.FechaIngreso)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Empleado.FechaIngreso)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Empleado.Activo)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Empleado.Activo)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Empleado.FechaAlta)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Empleado.FechaAlta)
-        </dd>
-    </dl>
+    <a asp-page="./Index" class="btn btn-outline-secondary btn-baykus-secondary">
+        Volver al listado
+    </a>
 </div>
-<div>
-    <a asp-page="./Edit" asp-route-id="@Model.Empleado.Id">Edit</a> |
-    <a asp-page="./Index">Back to List</a>
+
+<div class="baykus-card employee-detail-card">
+
+    <div class="employee-profile-header mb-3">
+        <div class="employee-profile-main">
+            <div class="employee-avatar">
+                @iniciales
+            </div>
+
+            <div>
+                <div class="d-flex align-items-center gap-2 flex-wrap">
+                    <h3 class="employee-profile-name mb-0">
+                        @nombreCompleto
+                    </h3>
+
+                    @if (Model.Empleado.Activo)
+                    {
+                        <span class="badge baykus-badge-success">
+                            Activo
+                        </span>
+                    }
+                    else
+                    {
+                        <span class="badge baykus-badge-muted">
+                            Inactivo
+                        </span>
+                    }
+                </div>
+
+                <p class="employee-profile-subtitle mb-0">
+                    @(Model.Empleado.Puesto ?? "Sin puesto asignado")
+                    @if (!string.IsNullOrWhiteSpace(Model.Empleado.Sector))
+                    {
+                        <span> · @Model.Empleado.Sector</span>
+                    }
+                </p>
+            </div>
+        </div>
+
+        <div class="employee-profile-actions my-3">
+            <a asp-page="./Edit" asp-route-id="@Model.Empleado.Id" class="btn btn-primary btn-baykus-primary">
+                Editar empleado
+            </a>
+        </div>
+    </div>
+
+    <div class="baykus-form-divider"></div>
+
+    <div class="row g-4">
+        <div class="col-lg-6">
+            <div class="detail-section">
+                <h5 class="form-section-title">Datos personales</h5>
+                <p class="form-section-subtitle mb-3">
+                    Información de identificación y contacto.
+                </p>
+
+                <div class="detail-list">
+                    <div class="detail-item">
+                        <span class="detail-label">Nombre</span>
+                        <span class="detail-value">@Model.Empleado.Nombre</span>
+                    </div>
+
+                    <div class="detail-item">
+                        <span class="detail-label">Apellido</span>
+                        <span class="detail-value">@Model.Empleado.Apellido</span>
+                    </div>
+
+                    <div class="detail-item">
+                        <span class="detail-label">DNI</span>
+                        <span class="detail-value">@(Model.Empleado.Dni ?? "Sin cargar")</span>
+                    </div>
+
+                    <div class="detail-item">
+                        <span class="detail-label">Email</span>
+                        <span class="detail-value">@(Model.Empleado.Email ?? "Sin cargar")</span>
+                    </div>
+
+                    <div class="detail-item">
+                        <span class="detail-label">Teléfono</span>
+                        <span class="detail-value">@(Model.Empleado.Telefono ?? "Sin cargar")</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="detail-section">
+                <h5 class="form-section-title">Datos laborales</h5>
+                <p class="form-section-subtitle mb-3">
+                    Información interna relacionada a su puesto dentro de la empresa.
+                </p>
+
+                <div class="detail-list">
+                    <div class="detail-item">
+                        <span class="detail-label">Puesto</span>
+                        <span class="detail-value">@(Model.Empleado.Puesto ?? "Sin cargar")</span>
+                    </div>
+
+                    <div class="detail-item">
+                        <span class="detail-label">Sector</span>
+                        <span class="detail-value">@(Model.Empleado.Sector ?? "Sin cargar")</span>
+                    </div>
+
+                    <div class="detail-item">
+                        <span class="detail-label">Fecha de ingreso</span>
+                        <span class="detail-value">
+                            @(Model.Empleado.FechaIngreso?.ToString("dd/MM/yyyy") ?? "Sin fecha")
+                        </span>
+                    </div>
+
+                    <div class="detail-item">
+                        <span class="detail-label">Estado</span>
+                        <span class="detail-value">
+                            @if (Model.Empleado.Activo)
+                            {
+                                <span class="badge baykus-badge-success">Empleado activo</span>
+                            }
+                            else
+                            {
+                                <span class="badge baykus-badge-muted">Empleado inactivo</span>
+                            }
+                        </span>
+                    </div>
+
+                    <div class="detail-item">
+                        <span class="detail-label">Fecha de alta</span>
+                        <span class="detail-value">
+                            @Model.Empleado.FechaAlta.ToString("dd/MM/yyyy HH:mm")
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="baykus-form-actions mt-3">
+        <a asp-page="./Index" class="btn btn-outline-secondary btn-baykus-secondary">
+            Volver
+        </a>
+
+        <a asp-page="./Edit" asp-route-id="@Model.Empleado.Id" class="btn btn-primary btn-baykus-primary">
+            Editar empleado
+        </a>
+    </div>
 </div>

@@ -2,80 +2,172 @@
 @model Baykus.Web.Pages.EmpleadoPages.CreateModel
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Nuevo empleado";
 }
 
-<h1>Create</h1>
-
-<h4>Empleado</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form method="post">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <span class="text-danger">*</span>
-                <label asp-for="Empleado.Nombre" class="control-label"></label>
-                <input asp-for="Empleado.Nombre" class="form-control" aria-required="true"/>
-                <span asp-validation-for="Empleado.Nombre" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <span class="text-danger">*</span>
-                <label asp-for="Empleado.Apellido" class="control-label"></label>
-                <input asp-for="Empleado.Apellido" class="form-control" aria-required="true"/>
-                <span asp-validation-for="Empleado.Apellido" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Empleado.Dni" class="control-label"></label>
-                <input asp-for="Empleado.Dni" class="form-control" />
-                <span asp-validation-for="Empleado.Dni" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Empleado.Email" class="control-label"></label>
-                <input asp-for="Empleado.Email" class="form-control" />
-                <span asp-validation-for="Empleado.Email" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Empleado.Telefono" class="control-label"></label>
-                <input asp-for="Empleado.Telefono" class="form-control" />
-                <span asp-validation-for="Empleado.Telefono" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Empleado.Puesto" class="control-label"></label>
-                <input asp-for="Empleado.Puesto" class="form-control" />
-                <span asp-validation-for="Empleado.Puesto" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Empleado.Sector" class="control-label"></label>
-                <input asp-for="Empleado.Sector" class="form-control" />
-                <span asp-validation-for="Empleado.Sector" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Empleado.FechaIngreso" class="control-label"></label>
-                <input asp-for="Empleado.FechaIngreso" class="form-control" />
-                <span asp-validation-for="Empleado.FechaIngreso" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Empleado.Activo" class="control-label"></label>
-                <input asp-for="Empleado.Activo" class="form-check-input" />
-                <span asp-validation-for="Empleado.Activo" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Empleado.FechaAlta" class="control-label"></label>
-                <input asp-for="Empleado.FechaAlta" class="form-control" />
-                <span asp-validation-for="Empleado.FechaAlta" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h2 class="mb-1 fw-bold">Nuevo empleado</h2>
+        <p class="text-muted mb-0">
+            Cargá los datos básicos del empleado para incorporarlo al sistema.
+        </p>
     </div>
+
+    <a asp-page="./Index" class="btn btn-outline-secondary btn-baykus-secondary">
+        Volver al listado
+    </a>
 </div>
 
-<div>
-    <a asp-page="./Index">Back to List</a>
-</div>
+<form method="post">
+    <div asp-validation-summary="ModelOnly" class="alert alert-danger rounded-4" role="alert"></div>
+
+    <div class="baykus-card employee-form-card">
+
+        <div class="form-section-header">
+            <div>
+                <h5 class="form-section-title">Datos personales</h5>
+                <p class="form-section-subtitle">
+                    Información principal para identificar al empleado.
+                </p>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-md-6">
+                <label asp-for="Empleado.Nombre" class="form-label baykus-label">
+                    Nombre <span class="text-danger">*</span>
+                </label>
+                <input asp-for="Empleado.Nombre"
+                       class="form-control baykus-input"
+                       placeholder="Ej: Martina"
+                       aria-required="true" />
+                <span asp-validation-for="Empleado.Nombre" class="text-danger small"></span>
+            </div>
+
+            <div class="col-md-6">
+                <label asp-for="Empleado.Apellido" class="form-label baykus-label">
+                    Apellido <span class="text-danger">*</span>
+                </label>
+                <input asp-for="Empleado.Apellido"
+                       class="form-control baykus-input"
+                       placeholder="Ej: Bazán"
+                       aria-required="true" />
+                <span asp-validation-for="Empleado.Apellido" class="text-danger small"></span>
+            </div>
+
+            <div class="col-md-4">
+                <label asp-for="Empleado.Dni" class="form-label baykus-label">
+                    DNI
+                </label>
+                <input asp-for="Empleado.Dni"
+                       class="form-control baykus-input"
+                       placeholder="Ej: 40123456" />
+                <span asp-validation-for="Empleado.Dni" class="text-danger small"></span>
+            </div>
+
+            <div class="col-md-4">
+                <label asp-for="Empleado.Email" class="form-label baykus-label">
+                    Email
+                </label>
+                <input asp-for="Empleado.Email"
+                       class="form-control baykus-input"
+                       placeholder="nombre@empresa.com" />
+                <span asp-validation-for="Empleado.Email" class="text-danger small"></span>
+            </div>
+
+            <div class="col-md-4">
+                <label asp-for="Empleado.Telefono" class="form-label baykus-label">
+                    Teléfono
+                </label>
+                <input asp-for="Empleado.Telefono"
+                       class="form-control baykus-input"
+                       placeholder="Ej: 261 555 1234" />
+                <span asp-validation-for="Empleado.Telefono" class="text-danger small"></span>
+            </div>
+        </div>
+
+        <div class="baykus-form-divider"></div>
+
+        <div class="form-section-header mt-3">
+            <div>
+                <h5 class="form-section-title">Datos laborales</h5>
+                <p class="form-section-subtitle">
+                    Información relacionada al puesto, sector y estado dentro de la empresa.
+                </p>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-md-4">
+                <label asp-for="Empleado.Puesto" class="form-label baykus-label">
+                    Puesto
+                </label>
+                <input asp-for="Empleado.Puesto"
+                       class="form-control baykus-input"
+                       placeholder="Ej: Analista de RRHH" />
+                <span asp-validation-for="Empleado.Puesto" class="text-danger small"></span>
+            </div>
+
+            <div class="col-md-4">
+                <label asp-for="Empleado.Sector" class="form-label baykus-label">
+                    Sector
+                </label>
+                <input asp-for="Empleado.Sector"
+                       class="form-control baykus-input"
+                       placeholder="Ej: Recursos Humanos" />
+                <span asp-validation-for="Empleado.Sector" class="text-danger small"></span>
+            </div>
+
+            <div class="col-md-4">
+                <label asp-for="Empleado.FechaIngreso" class="form-label baykus-label">
+                    Fecha de ingreso
+                </label>
+                <input asp-for="Empleado.FechaIngreso"
+                       type="date"
+                       class="form-control baykus-input" />
+                <span asp-validation-for="Empleado.FechaIngreso" class="text-danger small"></span>
+            </div>
+
+            <div class="col-md-12">
+                <div class="baykus-switch-card">
+                    <div>
+                        <label asp-for="Empleado.Activo" class="form-label baykus-label mb-1">
+                            Estado del empleado
+                        </label>
+                        <p class="text-muted mb-0 small">
+                            Si está activo, aparecerá como empleado vigente dentro del sistema.
+                        </p>
+                    </div>
+
+                    <div class="form-check form-switch baykus-switch">
+                        <input asp-for="Empleado.Activo"
+                               class="form-check-input"
+                               type="checkbox"
+                               role="switch" />
+                        <label class="form-check-label" asp-for="Empleado.Activo">
+                            Activo
+                        </label>
+                    </div>
+                </div>
+
+                <span asp-validation-for="Empleado.Activo" class="text-danger small"></span>
+            </div>
+        </div>
+
+        <div class="baykus-form-actions mt-3">
+            <a asp-page="./Index" class="btn btn-outline-secondary btn-baykus-secondary">
+                Cancelar
+            </a>
+
+            <button type="submit" class="btn btn-primary btn-baykus-primary">
+                Guardar empleado
+            </button>
+        </div>
+    </div>
+</form>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

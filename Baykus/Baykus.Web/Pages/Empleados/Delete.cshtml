@@ -2,80 +2,128 @@
 @model Baykus.Web.Pages.EmpleadoPages.DeleteModel
 
 @{
-    ViewData["Title"] = "Delete";
+    ViewData["Title"] = "Eliminar empleado";
+
+    var nombreCompleto = $"{Model.Empleado.Nombre} {Model.Empleado.Apellido}";
+    var iniciales = $"{Model.Empleado.Nombre?.FirstOrDefault()}{Model.Empleado.Apellido?.FirstOrDefault()}".ToUpper();
 }
 
-<h1>Delete</h1>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h2 class="mb-1 fw-bold">Eliminar empleado</h2>
+        <p class="text-muted mb-0">
+            Confirmá la eliminación del perfil seleccionado.
+        </p>
+    </div>
 
-<h3>Are you sure you want to delete this?</h3>
-<div>
-    <h4>Baykus.Web.Models.Empleado</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Empleado.Nombre)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Empleado.Nombre)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Empleado.Apellido)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Empleado.Apellido)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Empleado.Dni)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Empleado.Dni)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Empleado.Email)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Empleado.Email)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Empleado.Telefono)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Empleado.Telefono)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Empleado.Puesto)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Empleado.Puesto)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Empleado.Sector)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Empleado.Sector)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Empleado.FechaIngreso)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Empleado.FechaIngreso)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Empleado.Activo)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Empleado.Activo)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Empleado.FechaAlta)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Empleado.FechaAlta)
-        </dd>
-    </dl>
+    <a asp-page="./Index" class="btn btn-outline-secondary btn-baykus-secondary">
+        Volver al listado
+    </a>
+</div>
+
+<div class="baykus-card employee-delete-card">
+
+    <div class="delete-warning-box mb-3">
+        <div class="delete-warning-icon">
+            !
+        </div>
+
+        <div>
+            <h4 class="delete-warning-title">
+                ¿Seguro que querés eliminar este empleado?
+            </h4>
+            <p class="delete-warning-text mb-0">
+                Esta acción quitará el registro del sistema. Antes de continuar, revisá que sea el empleado correcto.
+            </p>
+        </div>
+    </div>
+
+    <div class="baykus-form-divider"></div>
+
+    <div class="employee-profile-header">
+        <div class="employee-profile-main">
+            <div class="employee-avatar">
+                @iniciales
+            </div>
+
+            <div>
+                <div class="d-flex align-items-center gap-2 flex-wrap">
+                    <h3 class="employee-profile-name mb-0">
+                        @nombreCompleto
+                    </h3>
+
+                    @if (Model.Empleado.Activo)
+                    {
+                        <span class="badge baykus-badge-success">
+                            Activo
+                        </span>
+                    }
+                    else
+                    {
+                        <span class="badge baykus-badge-muted">
+                            Inactivo
+                        </span>
+                    }
+                </div>
+
+                <p class="employee-profile-subtitle mb-0">
+                    @(Model.Empleado.Puesto ?? "Sin puesto asignado")
+                    @if (!string.IsNullOrWhiteSpace(Model.Empleado.Sector))
+                    {
+                        <span> · @Model.Empleado.Sector</span>
+                    }
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="delete-summary-grid mt-4">
+        <div class="delete-summary-item">
+            <span class="detail-label">DNI</span>
+            <span class="detail-value">@(Model.Empleado.Dni ?? "Sin cargar")</span>
+        </div>
+
+        <div class="delete-summary-item">
+            <span class="detail-label">Email</span>
+            <span class="detail-value">@(Model.Empleado.Email ?? "Sin cargar")</span>
+        </div>
+
+        <div class="delete-summary-item">
+            <span class="detail-label">Teléfono</span>
+            <span class="detail-value">@(Model.Empleado.Telefono ?? "Sin cargar")</span>
+        </div>
+
+        <div class="delete-summary-item">
+            <span class="detail-label">Fecha de ingreso</span>
+            <span class="detail-value">
+                @(Model.Empleado.FechaIngreso?.ToString("dd/MM/yyyy") ?? "Sin fecha")
+            </span>
+        </div>
+
+        <div class="delete-summary-item">
+            <span class="detail-label">Sector</span>
+            <span class="detail-value">@(Model.Empleado.Sector ?? "Sin cargar")</span>
+        </div>
+
+        <div class="delete-summary-item">
+            <span class="detail-label">Fecha de alta</span>
+            <span class="detail-value">
+                @Model.Empleado.FechaAlta.ToString("dd/MM/yyyy HH:mm")
+            </span>
+        </div>
+    </div>
+
     <form method="post">
         <input type="hidden" asp-for="Empleado.Id" />
-        <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <a asp-page="./Index">Back to List</a>
+
+        <div class="baykus-form-actions delete-actions">
+            <a asp-page="./Details" asp-route-id="@Model.Empleado.Id" class="btn btn-outline-secondary btn-baykus-secondary">
+                Cancelar
+            </a>
+
+            <button type="submit" class="btn btn-baykus-danger">
+                Sí, eliminar empleado
+            </button>
+        </div>
     </form>
 </div>
