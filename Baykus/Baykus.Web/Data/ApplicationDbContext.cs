@@ -1,9 +1,19 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Baykus.Web.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace Baykus.Web.Data
 {
-    public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : IdentityDbContext(options)
+    public class ApplicationDbContext : IdentityDbContext
     {
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+        : base(options)
+        {
+        }
+
+        public DbSet<Empresa> Empresas { get; set; }
+        public DbSet<Modulo> Modulos { get; set; }
+        public DbSet<EmpresaModulo> EmpresaModulos { get; set; }
+        public DbSet<Empleado> Empleados { get; set; }
     }
 }
