@@ -1,10 +1,39 @@
 ﻿@page
 @model IndexModel
 @{
-    ViewData["Title"] = "Home page";
+    ViewData["Title"] = "Dashboard";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="row g-4 mb-4">
+    <div class="col-md-4">
+        <div class="baykus-stat">
+            <div class="baykus-stat-label">Empleados activos</div>
+            <div class="baykus-stat-value">0</div>
+            <div class="baykus-stat-help">Personas registradas en la empresa</div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="baykus-stat">
+            <div class="baykus-stat-label">Módulos activos</div>
+            <div class="baykus-stat-value">3</div>
+            <div class="baykus-stat-help">Funcionalidades disponibles</div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="baykus-stat">
+            <div class="baykus-stat-label">Usuarios</div>
+            <div class="baykus-stat-value">1</div>
+            <div class="baykus-stat-help">Usuarios con acceso al sistema</div>
+        </div>
+    </div>
+</div>
+
+<div class="baykus-card">
+    <div class="baykus-card-title">Bienvenida a Baykus</div>
+    <p class="baykus-card-text">
+        Esta es la primera versión base de la plataforma. Desde acá vamos a construir los módulos de empleados,
+        recursos humanos, planillas horarias, documentación y configuración por cliente.
+    </p>
 </div>

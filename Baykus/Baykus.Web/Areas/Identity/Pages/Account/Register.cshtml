@@ -1,0 +1,89 @@
+@page
+@model RegisterModel
+
+@{
+    ViewData["Title"] = "Crear cuenta";
+    Layout = "/Pages/Shared/_Layout.cshtml";
+}
+
+<div class="auth-shell">
+    <section class="auth-left">
+        <div>
+            <img src="~/img/logo-baykus.png" alt="Baykus Sistema" class="auth-brand-logo" />
+        </div>
+
+        <div class="auth-copy">
+            <div class="auth-kicker">Alta de usuario</div>
+
+            <h1 class="auth-title">Creá tu acceso a Baykus.</h1>
+
+            <p class="auth-description">
+                Esta cuenta te permitirá ingresar al panel de gestión empresarial.
+                Más adelante, los usuarios serán creados y administrados por responsables internos.
+            </p>
+
+            <div class="auth-features">
+                <div class="auth-feature">Acceso seguro</div>
+                <div class="auth-feature">Usuarios internos</div>
+                <div class="auth-feature">Panel privado</div>
+                <div class="auth-feature">Gestión modular</div>
+            </div>
+        </div>
+
+        <div class="small opacity-75">
+            Baykus Sistema · v0.1
+        </div>
+    </section>
+
+    <section class="auth-right">
+        <div class="auth-card">
+            <div class="auth-card-header">
+                <h2 class="auth-card-title">Crear cuenta</h2>
+                <p class="auth-card-subtitle">Registrá un usuario para acceder al sistema.</p>
+            </div>
+
+            <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="auth-form">
+                <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+
+                <div class="mb-3">
+                    <label asp-for="Input.Email" class="form-label">Email</label>
+                    <input asp-for="Input.Email" class="form-control" autocomplete="username" placeholder="nombre@empresa.com" />
+                    <span asp-validation-for="Input.Email"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Input.Password" class="form-label">Contraseña</label>
+                    <input asp-for="Input.Password" class="form-control" autocomplete="new-password" placeholder="Mínimo 6 caracteres" />
+                    <span asp-validation-for="Input.Password"></span>
+                </div>
+
+                <div class="mb-4">
+                    <label asp-for="Input.ConfirmPassword" class="form-label">Confirmar contraseña</label>
+                    <input asp-for="Input.ConfirmPassword" class="form-control" autocomplete="new-password" placeholder="Repetí la contraseña" />
+                    <span asp-validation-for="Input.ConfirmPassword"></span>
+                </div>
+
+                <button id="registerSubmit" type="submit" class="btn btn-primary auth-submit">
+                    Crear cuenta
+                </button>
+
+                <div class="auth-divider"></div>
+
+                <div class="auth-links">
+                    <span>
+                        ¿Ya tenés una cuenta?
+                        <a asp-page="./Login" asp-route-returnUrl="@Model.ReturnUrl">Iniciar sesión</a>
+                    </span>
+                </div>
+
+                <p class="auth-small-note">
+                    En producción, el registro público puede desactivarse y quedar solo para administradores.
+                </p>
+            </form>
+        </div>
+    </section>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
