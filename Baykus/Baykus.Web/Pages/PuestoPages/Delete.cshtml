@@ -1,0 +1,147 @@
+@page
+@model Baykus.Web.Pages.PuestoPages.DeleteModel
+
+@{
+    ViewData["Title"] = "Eliminar puesto";
+}
+
+<div class="page-header mb-4">
+    <div>
+        <h1 class="page-title">Eliminar puesto</h1>
+        <p class="page-subtitle">
+            Confirmá si querés eliminar este puesto de trabajo del sistema.
+        </p>
+    </div>
+
+    <a asp-page="./Index" class="btn btn-light btn-volver">
+        ← Volver
+    </a>
+</div>
+
+<div class="baykus-card employee-delete-card">
+
+    <div class="delete-warning-box mb-4">
+        <div class="delete-warning-icon">
+            !
+        </div>
+
+        <div>
+            <div class="delete-warning-title">
+                ¿Estás segura de que querés eliminar este puesto?
+            </div>
+
+            <div class="delete-warning-text">
+                Esta acción eliminará el puesto seleccionado. Si este puesto luego se relaciona con empleados,
+                lo recomendable será desactivarlo en lugar de eliminarlo definitivamente.
+            </div>
+        </div>
+    </div>
+
+    <div class="employee-profile-header mb-4">
+        <div class="employee-profile-main">
+            <div class="employee-avatar" style="font-size: 2.4rem !important">
+                💼
+            </div>
+
+            <div>
+                <div class="employee-profile-name">
+                    @Model.Puesto.Nombre
+                </div>
+
+                <div class="employee-profile-subtitle">
+                    Puesto de trabajo
+                </div>
+            </div>
+        </div>
+
+        <div>
+            @if (Model.Puesto.Activo)
+            {
+                <span class="baykus-badge-success">Activo</span>
+            }
+            else
+            {
+                <span class="baykus-badge-muted">Inactivo</span>
+            }
+        </div>
+    </div>
+
+    <div class="delete-summary-grid">
+
+        <div class="delete-summary-item">
+            <div class="detail-label">
+                Nombre
+            </div>
+            <div class="detail-value">
+                @Model.Puesto.Nombre
+            </div>
+        </div>
+
+        <div class="delete-summary-item">
+            <div class="detail-label">
+                Estado
+            </div>
+            <div class="detail-value">
+                @if (Model.Puesto.Activo)
+                {
+                    <span class="baykus-badge-success">Activo</span>
+                }
+                else
+                {
+                    <span class="baykus-badge-muted">Inactivo</span>
+                }
+            </div>
+        </div>
+
+        <div class="delete-summary-item">
+            <div class="detail-label">
+                Fecha de creación
+            </div>
+            <div class="detail-value">
+                @Model.Puesto.FechaCreacion.ToString("dd/MM/yyyy")
+            </div>
+        </div>
+
+    </div>
+
+    <div class="detail-section mt-4">
+        <div class="detail-list">
+            <div class="detail-item">
+                <div class="detail-label">
+                    Descripción
+                </div>
+
+                <div class="detail-value">
+                    @if (!string.IsNullOrWhiteSpace(Model.Puesto.Descripcion))
+                    {
+                        @Model.Puesto.Descripcion
+                    }
+                    else
+                    {
+                        <span class="text-muted">Sin descripción</span>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <form method="post" class="delete-actions">
+        <input type="hidden" asp-for="Puesto.Id" />
+
+        <div class="form-actions">
+            <a asp-page="./Index" class="btn btn-outline-secondary btn-form">
+                Cancelar
+            </a>
+
+            <a asp-page="./Details"
+               asp-route-id="@Model.Puesto.Id"
+               class="btn btn-outline-primary btn-form">
+                Ver detalle
+            </a>
+
+            <button type="submit" class="btn-baykus-danger">
+                Eliminar puesto
+            </button>
+        </div>
+    </form>
+</div>

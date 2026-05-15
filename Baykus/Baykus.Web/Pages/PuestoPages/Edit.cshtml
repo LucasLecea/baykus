@@ -1,0 +1,100 @@
+@page
+@model Baykus.Web.Pages.PuestoPages.EditModel
+
+@{
+    ViewData["Title"] = "Editar puesto";
+}
+
+<div class="page-header mb-4">
+    <div>
+        <h1 class="page-title">Editar puesto</h1>
+        <p class="page-subtitle">
+            Actualizá la información registrada para este puesto de trabajo.
+        </p>
+    </div>
+
+    <a asp-page="./Index" class="btn btn-light btn-volver">
+        ← Volver
+    </a>
+</div>
+
+<div class="form-card">
+    <form method="post">
+        <div asp-validation-summary="ModelOnly" class="alert alert-danger mb-4"></div>
+
+        <input type="hidden" asp-for="Puesto.Id" />
+        <input type="hidden" asp-for="Puesto.FechaCreacion" />
+
+        <div class="form-section">
+            <h2 class="form-section-title">Información del puesto</h2>
+            <p class="form-section-subtitle">
+                Modificá el nombre, la descripción o el estado del puesto.
+            </p>
+
+            <div class="mb-4">
+                <label asp-for="Puesto.Nombre" class="form-label">
+                    Nombre del puesto <span class="text-danger">*</span>
+                </label>
+
+                <input asp-for="Puesto.Nombre"
+                       class="form-control baykus-input"
+                       placeholder="Ej: Administrativo, Vendedor, Supervisor"
+                       autocomplete="off" />
+
+                <span asp-validation-for="Puesto.Nombre" class="text-danger small"></span>
+            </div>
+
+            <div class="mb-4">
+                <label asp-for="Puesto.Descripcion" class="form-label">
+                    Descripción
+                </label>
+
+                <textarea asp-for="Puesto.Descripcion"
+                          class="form-control baykus-input"
+                          rows="4"
+                          placeholder="Describí brevemente las tareas o responsabilidades del puesto"></textarea>
+
+                <span asp-validation-for="Puesto.Descripcion" class="text-danger small"></span>
+            </div>
+
+            <div class="estado-box">
+                <div>
+                    <label asp-for="Puesto.Activo" class="estado-title">
+                        Puesto activo
+                    </label>
+                    <p class="estado-subtitle">
+                        Si está activo, podrá utilizarse dentro del sistema.
+                    </p>
+                </div>
+
+                <div class="form-check form-switch">
+                    <input asp-for="Puesto.Activo"
+                           class="form-check-input estado-switch"
+                           type="checkbox" />
+                </div>
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <a asp-page="./Index" class="btn btn-outline-secondary btn-form">
+                Cancelar
+            </a>
+
+            <a asp-page="./Details"
+               asp-route-id="@Model.Puesto.Id"
+               class="btn btn-outline-primary btn-form">
+                Ver detalle
+            </a>
+
+            <button type="submit" class="btn btn-primary btn-form">
+                Guardar cambios
+            </button>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

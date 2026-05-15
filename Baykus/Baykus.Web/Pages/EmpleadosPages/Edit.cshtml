@@ -1,33 +1,60 @@
 @page
-@model Baykus.Web.Pages.EmpleadoPages.CreateModel
+@model Baykus.Web.Pages.EmpleadoPages.EditModel
 
 @{
-    ViewData["Title"] = "Nuevo empleado";
+    ViewData["Title"] = "Editar empleado";
 }
 
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
-        <h2 class="mb-1 fw-bold">Nuevo empleado</h2>
+        <h2 class="mb-1 fw-bold">Editar empleado</h2>
         <p class="text-muted mb-0">
-            Cargá los datos básicos del empleado para incorporarlo al sistema.
+            Actualizá los datos personales y laborales del empleado seleccionado.
         </p>
     </div>
 
-    <a asp-page="./Index" class="btn btn-outline-secondary btn-baykus-secondary">
-        Volver al listado
+    <a asp-page="./Index" class="btn btn-light btn-volver">
+        ← Volver
     </a>
 </div>
 
 <form method="post">
     <div asp-validation-summary="ModelOnly" class="alert alert-danger rounded-4" role="alert"></div>
 
+    <input type="hidden" asp-for="Empleado.Id" />
+    <input type="hidden" asp-for="Empleado.FechaAlta" />
+
     <div class="baykus-card employee-form-card">
+
+        <div class="employee-edit-header mb-3">
+            <div class="employee-avatar employee-avatar-sm">
+                @{
+                    var iniciales = $"{Model.Empleado.Nombre?.FirstOrDefault()}{Model.Empleado.Apellido?.FirstOrDefault()}".ToUpper();
+                }
+                @iniciales
+            </div>
+
+            <div>
+                <h4 class="mb-1 fw-bold">
+                    @Model.Empleado.Nombre @Model.Empleado.Apellido
+                </h4>
+                <p class="text-muted mb-0">
+                    @(Model.Empleado.Puesto ?? "Sin puesto asignado")
+                    @if (!string.IsNullOrWhiteSpace(Model.Empleado.Sector))
+                    {
+                        <span> · @Model.Empleado.Sector</span>
+                    }
+                </p>
+            </div>
+        </div>
+
+        <div class="baykus-form-divider"></div>
 
         <div class="form-section-header">
             <div>
                 <h5 class="form-section-title">Datos personales</h5>
                 <p class="form-section-subtitle">
-                    Información principal para identificar al empleado.
+                    Información principal para identificar y contactar al empleado.
                 </p>
             </div>
         </div>
@@ -155,12 +182,12 @@
         </div>
 
         <div class="baykus-form-actions mt-3">
-            <a asp-page="./Index" class="btn btn-outline-secondary btn-baykus-secondary">
+            <a asp-page="./Details" asp-route-id="@Model.Empleado.Id" class="btn btn-outline-secondary btn-baykus-secondary">
                 Cancelar
             </a>
 
             <button type="submit" class="btn btn-primary btn-baykus-primary">
-                Guardar empleado
+                Guardar cambios
             </button>
         </div>
     </div>

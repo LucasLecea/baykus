@@ -49,27 +49,33 @@
                             <td>
                                 @if (item.Activo)
                                 {
-                                    <span class="badge bg-success-subtle text-success border border-success-subtle">
-                                        Activo
-                                    </span>
+                                    <span class="badge badge-activo">Activo</span>
                                 }
                                 else
                                 {
-                                    <span class="badge bg-secondary-subtle text-secondary border border-secondary-subtle">
-                                        Inactivo
-                                    </span>
+                                    <span class="badge badge-inactivo">Inactivo</span>
                                 }
                             </td>
                             <td class="text-end">
-                                <a asp-page="./Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary">
-                                    Ver
-                                </a>
-                                <a asp-page="./Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary">
-                                    Editar
-                                </a>
-                                <a asp-page="./Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger">
-                                    Eliminar
-                                </a>
+                                <div class="acciones-tabla">
+                                    <a asp-page="./Details"
+                                       asp-route-id="@item.Id"
+                                       class="btn btn-sm btn-outline-secondary">
+                                        Ver
+                                    </a>
+
+                                    <a asp-page="./Edit"
+                                       asp-route-id="@item.Id"
+                                       class="btn btn-sm btn-outline-primary">
+                                        Editar
+                                    </a>
+
+                                    <a asp-page="./Delete"
+                                       asp-route-id="@item.Id"
+                                       class="btn btn-sm btn-outline-danger">
+                                        Eliminar
+                                    </a>
+                                </div>
                             </td>
                         </tr>
                     }
