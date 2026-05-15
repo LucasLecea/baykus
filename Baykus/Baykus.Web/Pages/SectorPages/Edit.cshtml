@@ -1,0 +1,100 @@
+@page
+@model Baykus.Web.Pages.SectorPages.EditModel
+
+@{
+    ViewData["Title"] = "Editar sector";
+}
+
+<div class="page-header mb-4">
+    <div>
+        <h1 class="page-title">Editar sector</h1>
+        <p class="page-subtitle">
+            Actualizá la información registrada para este sector de la organización.
+        </p>
+    </div>
+
+    <a asp-page="./Index" class="btn btn-light btn-volver">
+        ← Volver
+    </a>
+</div>
+
+<div class="form-card">
+    <form method="post">
+        <div asp-validation-summary="ModelOnly" class="alert alert-danger mb-4"></div>
+
+        <input type="hidden" asp-for="Sector.Id" />
+        <input type="hidden" asp-for="Sector.FechaCreacion" />
+
+        <div class="form-section">
+            <h2 class="form-section-title">Información del sector</h2>
+            <p class="form-section-subtitle">
+                Modificá el nombre, la descripción o el estado del sector.
+            </p>
+
+            <div class="mb-4">
+                <label asp-for="Sector.Nombre" class="form-label">
+                    Nombre del sector <span class="text-danger">*</span>
+                </label>
+
+                <input asp-for="Sector.Nombre"
+                       class="form-control baykus-input"
+                       placeholder="Ej: Administración, Ventas, Recursos Humanos"
+                       autocomplete="off" />
+
+                <span asp-validation-for="Sector.Nombre" class="text-danger small"></span>
+            </div>
+
+            <div class="mb-4">
+                <label asp-for="Sector.Descripcion" class="form-label">
+                    Descripción
+                </label>
+
+                <textarea asp-for="Sector.Descripcion"
+                          class="form-control baykus-input"
+                          rows="4"
+                          placeholder="Describí brevemente el área, sus funciones o responsabilidades"></textarea>
+
+                <span asp-validation-for="Sector.Descripcion" class="text-danger small"></span>
+            </div>
+
+            <div class="estado-box">
+                <div>
+                    <label asp-for="Sector.Activo" class="estado-title">
+                        Sector activo
+                    </label>
+                    <p class="estado-subtitle">
+                        Si está activo, podrá utilizarse dentro del sistema.
+                    </p>
+                </div>
+
+                <div class="form-check form-switch">
+                    <input asp-for="Sector.Activo"
+                           class="form-check-input estado-switch"
+                           type="checkbox" />
+                </div>
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <a asp-page="./Index" class="btn btn-outline-secondary btn-form">
+                Cancelar
+            </a>
+
+            <a asp-page="./Details"
+               asp-route-id="@Model.Sector.Id"
+               class="btn btn-outline-primary btn-form">
+                Ver detalle
+            </a>
+
+            <button type="submit" class="btn btn-primary btn-form">
+                Guardar cambios
+            </button>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

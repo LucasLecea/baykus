@@ -1,0 +1,124 @@
+@page
+@model Baykus.Web.Pages.SectorPages.IndexModel
+
+@{
+    ViewData["Title"] = "Sectores";
+}
+
+<div class="page-header mb-4">
+    <div>
+        <h1 class="page-title">Sectores</h1>
+        <p class="page-subtitle">
+            Gestioná los sectores o áreas internas de la organización.
+        </p>
+    </div>
+
+    <a asp-page="Create" class="btn btn-primary btn-nuevo">
+        <span class="me-1">＋</span>
+        Nuevo sector
+    </a>
+</div>
+
+<div class="card baykus-card">
+    <div class="card-body">
+
+        @if (Model.Sector != null && Model.Sector.Any())
+        {
+            <div class="table-responsive">
+                <table class="table baykus-table align-middle">
+                    <thead>
+                        <tr>
+                            <th>Sector</th>
+                            <th>Descripción</th>
+                            <th>Estado</th>
+                            <th>Fecha de creación</th>
+                            <th class="text-end">Acciones</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @foreach (var item in Model.Sector)
+                        {
+                            <tr>
+                                <td>
+                                    <div class="puesto-nombre">
+                                        @item.Nombre
+                                    </div>
+                                </td>
+
+                                <td class="descripcion-cell">
+                                    @if (!string.IsNullOrWhiteSpace(item.Descripcion))
+                                    {
+                                        <span title="@item.Descripcion">
+                                            @item.Descripcion
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">Sin descripción</span>
+                                    }
+                                </td>
+
+                                <td>
+                                    @if (item.Activo)
+                                    {
+                                        <span class="badge badge-activo">Activo</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge badge-inactivo">Inactivo</span>
+                                    }
+                                </td>
+
+                                <td>
+                                    <span class="fecha-creacion">
+                                        @item.FechaCreacion.ToString("dd/MM/yyyy")
+                                    </span>
+                                </td>
+
+                                <td>
+                                    <div class="acciones-tabla">
+                                        <a asp-page="./Details"
+                                           asp-route-id="@item.Id"
+                                           class="btn btn-sm btn-outline-secondary">
+                                            Ver
+                                        </a>
+
+                                        <a asp-page="./Edit"
+                                           asp-route-id="@item.Id"
+                                           class="btn btn-sm btn-outline-primary">
+                                            Editar
+                                        </a>
+
+                                        <a asp-page="./Delete"
+                                           asp-route-id="@item.Id"
+                                           class="btn btn-sm btn-outline-danger">
+                                            Eliminar
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <div class="empty-state">
+                <div class="empty-icon">🏢</div>
+
+                <h3>No hay sectores cargados</h3>
+
+                <p>
+                    Creá el primer sector para organizar las áreas internas de la empresa.
+                </p>
+
+                <a asp-page="Create" class="btn btn-primary">
+                    Crear sector
+                </a>
+            </div>
+        }
+
+    </div>
+</div>
