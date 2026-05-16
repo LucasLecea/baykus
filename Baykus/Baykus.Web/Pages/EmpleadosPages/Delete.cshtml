@@ -67,10 +67,11 @@
                 </div>
 
                 <p class="employee-profile-subtitle mb-0">
-                    @(Model.Empleado.Puesto ?? "Sin puesto asignado")
-                    @if (!string.IsNullOrWhiteSpace(Model.Empleado.Sector))
+                    @(Model.Empleado.Puesto?.Nombre ?? "Sin puesto asignado")
+
+                    @if (Model.Empleado.Sector != null)
                     {
-                        <span> · @Model.Empleado.Sector</span>
+                        <span> · @Model.Empleado.Sector.Nombre</span>
                     }
                 </p>
             </div>
@@ -102,7 +103,9 @@
 
         <div class="delete-summary-item">
             <span class="detail-label">Sector</span>
-            <span class="detail-value">@(Model.Empleado.Sector ?? "Sin cargar")</span>
+            <span class="detail-value">
+                @(Model.Empleado.Sector?.Nombre ?? "Sin cargar")
+            </span>
         </div>
 
         <div class="delete-summary-item">
@@ -117,7 +120,7 @@
         <input type="hidden" asp-for="Empleado.Id" />
 
         <div class="baykus-form-actions delete-actions">
-            <a asp-page="./Details" asp-route-id="@Model.Empleado.Id" class="btn btn-outline-secondary btn-baykus-secondary">
+            <a asp-page="./Index" asp-route-id="@Model.Empleado.Id" class="btn btn-outline-secondary btn-baykus-secondary">
                 Cancelar
             </a>
 

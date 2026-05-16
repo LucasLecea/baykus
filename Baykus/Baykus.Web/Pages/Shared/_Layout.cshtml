@@ -3,6 +3,16 @@
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
 
+
+@{
+    var currentPath = Context.Request.Path.Value?.ToLower() ?? "";
+
+    bool IsActive(string path)
+    {
+        return currentPath.StartsWith(path.ToLower());
+    }
+}
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -27,22 +37,22 @@
                 </div>
 
                 <nav class="sidebar-menu">
-                    <a class="sidebar-link" asp-page="/Index">
+                    <a class="sidebar-link @(currentPath == "/" ? "active" : "")" asp-page="/Index">
                         <span class="sidebar-icon">⌂</span>
                         <span>Dashboard</span>
                     </a>
 
-                    <a class="sidebar-link" asp-page="/EmpleadosPages/Index">
+                    <a class="sidebar-link @(IsActive("/EmpleadosPages") ? "active" : "")" asp-page="/EmpleadosPages/Index">
                         <span class="sidebar-icon">👥</span>
                         <span>Empleados</span>
                     </a>
 
-                    <a class="sidebar-link" asp-page="/PuestoPages/Index">
+                    <a class="sidebar-link @(IsActive("/PuestoPages") ? "active" : "")" asp-page="/PuestoPages/Index">
                         <span class="sidebar-icon">💼</span>
                         <span>Puestos</span>
                     </a>
 
-                    <a class="sidebar-link" asp-page="/SectorPages/Index">
+                    <a class="sidebar-link @(IsActive("/SectorPages") ? "active" : "")" asp-page="/SectorPages/Index">
                         <span class="sidebar-icon">🏢</span>
                         <span>Sectores</span>
                     </a>

@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Baykus.Web.Models;
 using Baykus.Web.Data;
@@ -18,6 +19,9 @@ public class EditModel : PageModel
     [BindProperty]
     public Empleado Empleado { get; set; } = default!;
 
+    public SelectList PuestosSelectList { get; set; } = default!;
+    public SelectList SectoresSelectList { get; set; } = default!;
+
     public async Task<IActionResult> OnGetAsync(int? id)
     {
         if (id is null)
@@ -25,21 +29,28 @@ public class EditModel : PageModel
             return NotFound();
         }
 
-        var empleado = await _context.Empleados.FirstOrDefaultAsync(m => m.Id == id);
+        var empleado = await _context.Empleados
+            .Include(e => e.Puesto)
+            .Include(e => e.Sector)
+            .FirstOrDefaultAsync(m => m.Id == id);
+
         if (empleado is null)
         {
             return NotFound();
         }
+
         Empleado = empleado;
+
+        await CargarCombosAsync();
+
         return Page();
     }
 
-    // To protect from overposting attacks, enable the specific properties you want to bind to.
-    // For more details, see https://aka.ms/RazorPagesCRUD.
     public async Task<IActionResult> OnPostAsync()
     {
         if (!ModelState.IsValid)
         {
+            await CargarCombosAsync();
             return Page();
         }
 
@@ -55,13 +66,27 @@ public class EditModel : PageModel
             {
                 return NotFound();
             }
-            else
-            {
-                throw;
-            }
+
+            throw;
         }
 
         return RedirectToPage("./Index");
+    }
+
+    private async Task CargarCombosAsync()
+    {
+        var puestos = await _context.Puestos
+            .Where(p => p.Activo)
+            .OrderBy(p => p.Nombre)
+            .ToListAsync();
+
+        var sectores = await _context.Sector
+            .Where(s => s.Activo)
+            .OrderBy(s => s.Nombre)
+            .ToListAsync();
+
+        PuestosSelectList = new SelectList(puestos, "Id", "Nombre", Empleado?.PuestoId);
+        SectoresSelectList = new SelectList(sectores, "Id", "Nombre", Empleado?.SectorId);
     }
 
     private bool EmpleadoExists(int id)

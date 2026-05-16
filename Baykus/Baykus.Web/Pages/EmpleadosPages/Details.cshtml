@@ -50,10 +50,11 @@
                 </div>
 
                 <p class="employee-profile-subtitle mb-0">
-                    @(Model.Empleado.Puesto ?? "Sin puesto asignado")
-                    @if (!string.IsNullOrWhiteSpace(Model.Empleado.Sector))
+                    @(Model.Empleado.Puesto?.Nombre ?? "Sin puesto asignado")
+
+                    @if (Model.Empleado.Sector != null)
                     {
-                        <span> · @Model.Empleado.Sector</span>
+                        <span> · @Model.Empleado.Sector.Nombre</span>
                     }
                 </p>
             </div>
@@ -115,12 +116,16 @@
                 <div class="detail-list">
                     <div class="detail-item">
                         <span class="detail-label">Puesto</span>
-                        <span class="detail-value">@(Model.Empleado.Puesto ?? "Sin cargar")</span>
+                        <span class="detail-value">
+                            @(Model.Empleado.Puesto?.Nombre ?? "Sin cargar")
+                        </span>
                     </div>
 
                     <div class="detail-item">
                         <span class="detail-label">Sector</span>
-                        <span class="detail-value">@(Model.Empleado.Sector ?? "Sin cargar")</span>
+                        <span class="detail-value">
+                            @(Model.Empleado.Sector?.Nombre ?? "Sin cargar")
+                        </span>
                     </div>
 
                     <div class="detail-item">
@@ -153,15 +158,5 @@
                 </div>
             </div>
         </div>
-    </div>
-
-    <div class="baykus-form-actions mt-3">
-        <a asp-page="./Index" class="btn btn-outline-secondary btn-baykus-secondary">
-            Volver
-        </a>
-
-        <a asp-page="./Edit" asp-route-id="@Model.Empleado.Id" class="btn btn-primary btn-baykus-primary">
-            Editar empleado
-        </a>
     </div>
 </div>

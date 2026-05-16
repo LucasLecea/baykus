@@ -19,8 +19,10 @@ public class IndexModel : PageModel
     public async Task OnGetAsync()
     {
         Empleados = await _context.Empleados
-            .OrderBy(e => e.Apellido)
-            .ThenBy(e => e.Nombre)
-            .ToListAsync();
+                .Include(e => e.Puesto)
+                .Include(e => e.Sector)
+                .OrderBy(e => e.Apellido)
+                .ThenBy(e => e.Nombre)
+                .ToListAsync();
     }
 }

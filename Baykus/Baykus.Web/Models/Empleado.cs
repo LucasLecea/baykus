@@ -24,11 +24,15 @@ namespace Baykus.Web.Models
         [StringLength(100)]
         public string? Telefono { get; set; }
 
-        [StringLength(100)]
-        public string? Puesto { get; set; }
+        [Display(Name = "Puesto")]
+        public int? PuestoId { get; set; }
 
-        [StringLength(100)]
-        public string? Sector { get; set; }
+        public Puesto? Puesto { get; set; }
+
+        [Display(Name = "Sector")]
+        public int? SectorId { get; set; }
+
+        public Sector? Sector { get; set; }
 
         public DateTime? FechaIngreso { get; set; }
 

@@ -25,15 +25,17 @@ public class DeleteModel : PageModel
             return NotFound();
         }
 
-        var empleado = await _context.Empleados.FirstOrDefaultAsync(m => m.Id == id);
+        var empleado = await _context.Empleados
+            .Include(e => e.Puesto)
+            .Include(e => e.Sector)
+            .FirstOrDefaultAsync(m => m.Id == id);
+
         if (empleado is null)
         {
             return NotFound();
         }
-        else
-        {
-            Empleado = empleado;
-        }
+
+        Empleado = empleado;
 
         return Page();
     }
@@ -46,10 +48,10 @@ public class DeleteModel : PageModel
         }
 
         var empleado = await _context.Empleados.FindAsync(id);
-        if (empleado != null)
+
+        if (empleado is not null)
         {
-            Empleado = empleado;
-            _context.Empleados.Remove(Empleado);
+            _context.Empleados.Remove(empleado);
             await _context.SaveChangesAsync();
         }
 
