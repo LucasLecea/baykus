@@ -11,6 +11,15 @@
     {
         return currentPath.StartsWith(path.ToLower());
     }
+
+    var abmsActivo =
+        IsActive("/EmpleadosPages") ||
+        IsActive("/PuestoPages") ||
+        IsActive("/SectorPages");
+
+    var gestionActivo =
+        IsActive("/ObjetivoPages") ||
+        IsActive("/OkrPages");
 }
 
 <!DOCTYPE html>
@@ -42,25 +51,64 @@
                         <span>Dashboard</span>
                     </a>
 
-                    <a class="sidebar-link @(IsActive("/EmpleadosPages") ? "active" : "")" asp-page="/EmpleadosPages/Index">
-                        <span class="sidebar-icon">👥</span>
-                        <span>Empleados</span>
-                    </a>
+                    <div class="sidebar-group">
+                        <button class="sidebar-link sidebar-group-toggle @(abmsActivo ? "active" : "")"
+                                type="button"
+                                data-bs-toggle="collapse"
+                                data-bs-target="#menuAbms"
+                                aria-expanded="@(abmsActivo.ToString().ToLower())"
+                                aria-controls="menuAbms">
+                            <span class="sidebar-icon">🗂️</span>
+                            <span>ABMs</span>
+                            <span class="sidebar-chevron">⌄</span>
+                        </button>
 
-                    <a class="sidebar-link @(IsActive("/PuestoPages") ? "active" : "")" asp-page="/PuestoPages/Index">
-                        <span class="sidebar-icon">💼</span>
-                        <span>Puestos</span>
-                    </a>
+                        <div class="collapse sidebar-submenu @(abmsActivo ? "show" : "")" id="menuAbms">
+                            <a class="sidebar-sublink @(IsActive("/EmpleadosPages") ? "active" : "")"
+                               asp-page="/EmpleadosPages/Index">
+                                <span class="sidebar-dot"></span>
+                                <span>Empleados</span>
+                            </a>
 
-                    <a class="sidebar-link @(IsActive("/SectorPages") ? "active" : "")" asp-page="/SectorPages/Index">
-                        <span class="sidebar-icon">🏢</span>
-                        <span>Sectores</span>
-                    </a>
+                            <a class="sidebar-sublink @(IsActive("/SectorPages") ? "active" : "")"
+                               asp-page="/SectorPages/Index">
+                                <span class="sidebar-dot"></span>
+                                <span>Sectores</span>
+                            </a>
 
-                    <a class="sidebar-link" href="#">
-                        <span class="sidebar-icon">🕒</span>
-                        <span>Planillas horarias</span>
-                    </a>
+                            <a class="sidebar-sublink @(IsActive("/PuestoPages") ? "active" : "")"
+                               asp-page="/PuestoPages/Index">
+                                <span class="sidebar-dot"></span>
+                                <span>Puestos</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="sidebar-group">
+                        <button class="sidebar-link sidebar-group-toggle @(gestionActivo ? "active" : "")"
+                                type="button"
+                                data-bs-toggle="collapse"
+                                data-bs-target="#menuGestion"
+                                aria-expanded="@(gestionActivo.ToString().ToLower())"
+                                aria-controls="menuGestion">
+                            <span class="sidebar-icon">📊</span>
+                            <span>Gestión</span>
+                            <span class="sidebar-chevron">⌄</span>
+                        </button>
+
+                        <div class="collapse sidebar-submenu @(gestionActivo ? "show" : "")" id="menuGestion">
+                            <a class="sidebar-sublink @(IsActive("/ObjetivoPages") ? "active" : "")"
+                               href="#">
+                                <span class="sidebar-dot"></span>
+                                <span>OKR / Objetivos</span>
+                            </a>
+
+                            <a class="sidebar-sublink" href="#">
+                                <span class="sidebar-dot"></span>
+                                <span>Planillas horarias</span>
+                            </a>
+                        </div>
+                    </div>
 
                     <a class="sidebar-link" href="#">
                         <span class="sidebar-icon">📁</span>
