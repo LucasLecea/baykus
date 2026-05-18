@@ -59,6 +59,22 @@
 
             <div class="detail-item">
                 <div class="detail-label">
+                    Sector
+                </div>
+                <div class="detail-value">
+                    @if (Model.Puesto.Sector != null)
+                    {
+                        @Model.Puesto.Sector.Nombre
+                    }
+                    else
+                    {
+                        <span class="text-muted">Sin sector asignado</span>
+                    }
+                </div>
+            </div>
+
+            <div class="detail-item">
+                <div class="detail-label">
                     Descripción
                 </div>
                 <div class="detail-value">

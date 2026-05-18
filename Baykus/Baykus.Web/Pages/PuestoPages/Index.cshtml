@@ -29,6 +29,7 @@
                     <thead>
                         <tr>
                             <th>Puesto</th>
+                            <th>Sector</th>
                             <th>Descripción</th>
                             <th>Estado</th>
                             <th>Fecha de creación</th>
@@ -43,6 +44,17 @@
                                     <div class="puesto-nombre">
                                         @item.Nombre
                                     </div>
+                                </td>
+
+                                <td>
+                                    @if (item.Sector != null)
+                                    {
+                                        <span>@item.Sector.Nombre</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">Sin sector</span>
+                                    }
                                 </td>
 
                                 <td class="descripcion-cell">

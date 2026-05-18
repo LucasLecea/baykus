@@ -9,6 +9,7 @@ namespace Baykus.Web.Pages.PuestoPages;
 public class DetailsModel : PageModel
 {
     private readonly ApplicationDbContext _context;
+
     public DetailsModel(ApplicationDbContext context)
     {
         _context = context;
@@ -23,15 +24,16 @@ public class DetailsModel : PageModel
             return NotFound();
         }
 
-        var puesto = await _context.Puestos.FirstOrDefaultAsync(m => m.Id == id);
+        var puesto = await _context.Puestos
+            .Include(p => p.Sector)
+            .FirstOrDefaultAsync(m => m.Id == id);
+
         if (puesto is null)
         {
             return NotFound();
         }
-        else
-        {
-            Puesto = puesto;
-        }
+
+        Puesto = puesto;
 
         return Page();
     }

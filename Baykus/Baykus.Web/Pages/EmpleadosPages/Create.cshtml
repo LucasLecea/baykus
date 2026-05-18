@@ -99,31 +99,34 @@
 
         <div class="row g-4">
             <div class="col-md-4">
-                <label asp-for="Empleado.PuestoId" class="form-label baykus-label">
-                    Puesto
-                </label>
-
-                <select asp-for="Empleado.PuestoId"
-                        asp-items="Model.PuestosSelectList"
-                        class="form-select baykus-input">
-                    <option value="">Seleccionar puesto</option>
-                </select>
-
-                <span asp-validation-for="Empleado.PuestoId" class="text-danger small"></span>
-            </div>
-
-            <div class="col-md-4">
                 <label asp-for="Empleado.SectorId" class="form-label baykus-label">
-                    Sector
+                    Sector <span class="text-danger">*</span>
                 </label>
 
                 <select asp-for="Empleado.SectorId"
                         asp-items="Model.SectoresSelectList"
-                        class="form-select baykus-input">
+                        class="form-select baykus-input"
+                        id="sectorSelect">
                     <option value="">Seleccionar sector</option>
                 </select>
 
                 <span asp-validation-for="Empleado.SectorId" class="text-danger small"></span>
+            </div>
+
+            <div class="col-md-4">
+                <label asp-for="Empleado.PuestoId" class="form-label baykus-label">
+                    Puesto <span class="text-danger">*</span>
+                </label>
+
+                <select asp-for="Empleado.PuestoId"
+                        asp-items="Model.PuestosSelectList"
+                        class="form-select baykus-input"
+                        id="puestoSelect"
+                        disabled>
+                    <option value="">Primero seleccioná un sector</option>
+                </select>
+
+                <span asp-validation-for="Empleado.PuestoId" class="text-danger small"></span>
             </div>
 
             <div class="col-md-4">
@@ -178,4 +181,65 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+
+    <script>
+        const puestos = @Html.Raw(Model.PuestosJson);
+
+        const sectorSelect = document.getElementById("sectorSelect");
+        const puestoSelect = document.getElementById("puestoSelect");
+
+        const puestoSeleccionado = "@Model.Empleado.PuestoId";
+
+        function cargarPuestosPorSector() {
+            const sectorId = sectorSelect.value;
+
+            puestoSelect.innerHTML = "";
+
+            if (!sectorId) {
+                puestoSelect.disabled = true;
+
+                const option = document.createElement("option");
+                option.value = "";
+                option.textContent = "Primero seleccioná un sector";
+                puestoSelect.appendChild(option);
+
+                return;
+            }
+
+            const puestosFiltrados = puestos.filter(p => p.sectorId == sectorId);
+
+            puestoSelect.disabled = false;
+
+            const optionDefault = document.createElement("option");
+            optionDefault.value = "";
+            optionDefault.textContent = puestosFiltrados.length > 0
+                ? "Seleccionar puesto"
+                : "No hay puestos cargados para este sector";
+
+            puestoSelect.appendChild(optionDefault);
+
+            puestosFiltrados.forEach(puesto => {
+                const option = document.createElement("option");
+                option.value = puesto.id;
+                option.textContent = puesto.nombre;
+
+                if (puestoSeleccionado && puestoSeleccionado == puesto.id) {
+                    option.selected = true;
+                }
+
+                puestoSelect.appendChild(option);
+            });
+
+            if (puestosFiltrados.length === 0) {
+                puestoSelect.disabled = true;
+            }
+        }
+
+        sectorSelect.addEventListener("change", function () {
+            puestoSelect.value = "";
+            cargarPuestosPorSector();
+        });
+
+        cargarPuestosPorSector();
+    </script>
 }

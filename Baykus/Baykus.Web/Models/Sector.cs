@@ -20,5 +20,6 @@ namespace Baykus.Web.Models
 
         [Display(Name = "Fecha de creación")]
         public DateTime FechaCreacion { get; set; } = DateTime.Now;
+        public ICollection<Puesto> Puestos { get; set; } = new List<Puesto>();
     }
 }

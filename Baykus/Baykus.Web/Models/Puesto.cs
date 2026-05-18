@@ -20,5 +20,9 @@ namespace Baykus.Web.Models
 
         [Display(Name = "Fecha de creación")]
         public DateTime FechaCreacion { get; set; } = DateTime.Now;
+        [Display(Name = "Sector")]
+        public int? SectorId { get; set; }
+
+        public Sector? Sector { get; set; }
     }
 }

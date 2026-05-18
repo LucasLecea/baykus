@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Baykus.Web.Models;
 using Baykus.Web.Data;
@@ -15,19 +16,27 @@ public class CreateModel : PageModel
         _context = context;
     }
 
-    public IActionResult OnGet()
+    [BindProperty]
+    public Puesto Puesto { get; set; } = new();
+
+    public SelectList Sectores { get; set; } = default!;
+
+    public async Task<IActionResult> OnGetAsync()
     {
+        await CargarSectoresAsync();
         return Page();
     }
 
-    [BindProperty]
-    public Puesto Puesto { get; set; } = default!;
-
-    // To protect from overposting attacks, see https://aka.ms/RazorPagesCRUD.
     public async Task<IActionResult> OnPostAsync()
     {
+        if (Puesto.SectorId == null)
+        {
+            ModelState.AddModelError("Puesto.SectorId", "Debe seleccionar un sector.");
+        }
+
         if (!ModelState.IsValid)
         {
+            await CargarSectoresAsync();
             return Page();
         }
 
@@ -35,5 +44,16 @@ public class CreateModel : PageModel
         await _context.SaveChangesAsync();
 
         return RedirectToPage("./Index");
+    }
+
+    private async Task CargarSectoresAsync()
+    {
+        var sectores = await _context.Sector
+            .AsNoTracking()
+            .Where(s => s.Activo)
+            .OrderBy(s => s.Nombre)
+            .ToListAsync();
+
+        Sectores = new SelectList(sectores, "Id", "Nombre");
     }
 }

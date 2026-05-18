@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Baykus.Web.Models;
 using Baykus.Web.Data;
@@ -18,6 +19,8 @@ public class EditModel : PageModel
     [BindProperty]
     public Puesto Puesto { get; set; } = default!;
 
+    public SelectList Sectores { get; set; } = default!;
+
     public async Task<IActionResult> OnGetAsync(int? id)
     {
         if (id is null)
@@ -25,21 +28,31 @@ public class EditModel : PageModel
             return NotFound();
         }
 
-        var puesto = await _context.Puestos.FirstOrDefaultAsync(m => m.Id == id);
+        var puesto = await _context.Puestos
+            .FirstOrDefaultAsync(m => m.Id == id);
+
         if (puesto is null)
         {
             return NotFound();
         }
+
         Puesto = puesto;
+
+        await CargarSectoresAsync(Puesto.SectorId);
+
         return Page();
     }
 
-    // To protect from overposting attacks, enable the specific properties you want to bind to.
-    // For more details, see https://aka.ms/RazorPagesCRUD.
     public async Task<IActionResult> OnPostAsync()
     {
+        if (Puesto.SectorId is null)
+        {
+            ModelState.AddModelError("Puesto.SectorId", "Debe seleccionar un sector.");
+        }
+
         if (!ModelState.IsValid)
         {
+            await CargarSectoresAsync(Puesto.SectorId);
             return Page();
         }
 
@@ -55,13 +68,22 @@ public class EditModel : PageModel
             {
                 return NotFound();
             }
-            else
-            {
-                throw;
-            }
+
+            throw;
         }
 
         return RedirectToPage("./Index");
+    }
+
+    private async Task CargarSectoresAsync(int? sectorSeleccionadoId = null)
+    {
+        var sectores = await _context.Sector
+            .Where(x => x.Activo != false)
+            .AsNoTracking()
+            .OrderBy(s => s.Nombre)
+            .ToListAsync();
+
+        Sectores = new SelectList(sectores, "Id", "Nombre", sectorSeleccionadoId);
     }
 
     private bool PuestoExists(int id)

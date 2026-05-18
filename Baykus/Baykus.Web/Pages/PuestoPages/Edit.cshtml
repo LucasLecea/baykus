@@ -45,6 +45,20 @@
             </div>
 
             <div class="mb-4">
+                <label asp-for="Puesto.SectorId" class="form-label">
+                    Sector <span class="text-danger">*</span>
+                </label>
+
+                <select asp-for="Puesto.SectorId"
+                        asp-items="Model.Sectores"
+                        class="form-control baykus-input">
+                    <option value="">Seleccioná un sector</option>
+                </select>
+
+                <span asp-validation-for="Puesto.SectorId" class="text-danger small"></span>
+            </div>
+
+            <div class="mb-4">
                 <label asp-for="Puesto.Descripcion" class="form-label">
                     Descripción
                 </label>

@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Baykus.Web.Models;
@@ -19,6 +18,9 @@ public class IndexModel : PageModel
 
     public async Task OnGetAsync()
     {
-        Puesto = await _context.Puestos.ToListAsync();
+        Puesto = await _context.Puestos
+            .Include(p => p.Sector)
+            .OrderBy(p => p.Nombre)
+            .ToListAsync();
     }
 }

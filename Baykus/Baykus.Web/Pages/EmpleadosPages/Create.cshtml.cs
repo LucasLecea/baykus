@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json;
 using Baykus.Web.Models;
 using Baykus.Web.Data;
 
@@ -17,10 +18,12 @@ public class CreateModel : PageModel
     }
 
     [BindProperty]
-    public Empleado Empleado { get; set; } = default!;
+    public Empleado Empleado { get; set; } = new();
 
     public SelectList PuestosSelectList { get; set; } = default!;
     public SelectList SectoresSelectList { get; set; } = default!;
+
+    public string PuestosJson { get; set; } = "[]";
 
     public async Task<IActionResult> OnGetAsync()
     {
@@ -30,9 +33,33 @@ public class CreateModel : PageModel
 
     public async Task<IActionResult> OnPostAsync()
     {
+        if (Empleado.SectorId == null)
+        {
+            ModelState.AddModelError("Empleado.SectorId", "Debe seleccionar un sector.");
+        }
+
+        if (Empleado.PuestoId == null)
+        {
+            ModelState.AddModelError("Empleado.PuestoId", "Debe seleccionar un puesto.");
+        }
+
+        if (Empleado.SectorId != null && Empleado.PuestoId != null)
+        {
+            var puestoPerteneceAlSector = await _context.Puestos
+                .AnyAsync(p =>
+                    p.Id == Empleado.PuestoId &&
+                    p.SectorId == Empleado.SectorId &&
+                    p.Activo);
+
+            if (!puestoPerteneceAlSector)
+            {
+                ModelState.AddModelError("Empleado.PuestoId", "El puesto seleccionado no pertenece al sector indicado.");
+            }
+        }
+
         if (!ModelState.IsValid)
         {
-            await CargarCombosAsync();
+            await CargarCombosAsync(Empleado.SectorId, Empleado.PuestoId);
             return Page();
         }
 
@@ -44,19 +71,34 @@ public class CreateModel : PageModel
         return RedirectToPage("./Index");
     }
 
-    private async Task CargarCombosAsync()
+    private async Task CargarCombosAsync(int? sectorSeleccionadoId = null, int? puestoSeleccionadoId = null)
     {
-        var puestos = await _context.Puestos
-            .Where(p => p.Activo)
-            .OrderBy(p => p.Nombre)
-            .ToListAsync();
-
         var sectores = await _context.Sector
+            .AsNoTracking()
             .Where(s => s.Activo)
             .OrderBy(s => s.Nombre)
             .ToListAsync();
 
-        PuestosSelectList = new SelectList(puestos, "Id", "Nombre");
-        SectoresSelectList = new SelectList(sectores, "Id", "Nombre");
+        var puestos = await _context.Puestos
+            .AsNoTracking()
+            .Where(p => p.Activo && p.SectorId != null)
+            .OrderBy(p => p.Nombre)
+            .Select(p => new
+            {
+                id = p.Id,
+                nombre = p.Nombre,
+                sectorId = p.SectorId
+            })
+            .ToListAsync();
+
+        SectoresSelectList = new SelectList(sectores, "Id", "Nombre", sectorSeleccionadoId);
+
+        var puestosFiltrados = puestos
+            .Where(p => p.sectorId == sectorSeleccionadoId)
+            .ToList();
+
+        PuestosSelectList = new SelectList(puestosFiltrados, "id", "nombre", puestoSeleccionadoId);
+
+        PuestosJson = JsonSerializer.Serialize(puestos);
     }
 }
