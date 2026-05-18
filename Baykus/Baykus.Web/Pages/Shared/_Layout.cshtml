@@ -18,7 +18,6 @@
         IsActive("/SectorPages");
 
     var gestionActivo =
-        IsActive("/ObjetivoPages") ||
         IsActive("/OkrPages");
 }
 
@@ -97,7 +96,13 @@
                         </button>
 
                         <div class="collapse sidebar-submenu @(gestionActivo ? "show" : "")" id="menuGestion">
-                            <a class="sidebar-sublink @(IsActive("/OkrPages") ? "active" : "")"
+                            <a class="sidebar-sublink @(IsActive("/OkrPages/Dashboard") ? "active" : "")"
+                               asp-page="/OkrPages/Dashboard">
+                                <span class="sidebar-dot"></span>
+                                <span>Dashboard OKR</span>
+                            </a>
+
+                            <a class="sidebar-sublink @(IsActive("/OkrPages/Index") || IsActive("/OkrPages/Create") || IsActive("/OkrPages/Edit") || IsActive("/OkrPages/Details") || IsActive("/OkrPages/Delete") ? "active" : "")"
                                asp-page="/OkrPages/Index">
                                 <span class="sidebar-dot"></span>
                                 <span>Objetivos / OKR</span>

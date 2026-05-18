@@ -1,0 +1,377 @@
+﻿@page
+@model Baykus.Web.Pages.OkrPages.DashboardModel
+@using Baykus.Web.Services
+
+@{
+    ViewData["Title"] = "Dashboard OKR";
+}
+
+<div class="page-header mb-4">
+    <div>
+        <h1 class="page-title">Dashboard OKR</h1>
+        <p class="page-subtitle">
+            Visualizá el estado general de los objetivos, avances y alertas principales.
+        </p>
+    </div>
+
+    <div class="d-flex gap-2">
+        <a asp-page="./Index" class="btn btn-light btn-volver">
+            Ver objetivos
+        </a>
+
+        <a asp-page="./Create" class="btn btn-primary btn-nuevo">
+            <span class="me-1">＋</span>
+            Nuevo objetivo
+        </a>
+    </div>
+</div>
+
+<div class="okr-dashboard-grid mb-4">
+    <div class="okr-stat-card">
+        <div class="okr-stat-icon">🎯</div>
+        <div>
+            <div class="okr-stat-value">@Model.TotalObjetivos</div>
+            <div class="okr-stat-label">Objetivos activos</div>
+        </div>
+    </div>
+
+    <div class="okr-stat-card">
+        <div class="okr-stat-icon">🚀</div>
+        <div>
+            <div class="okr-stat-value">@Model.ObjetivosEnProgreso</div>
+            <div class="okr-stat-label">En progreso</div>
+        </div>
+    </div>
+
+    <div class="okr-stat-card">
+        <div class="okr-stat-icon">✅</div>
+        <div>
+            <div class="okr-stat-value">@Model.ObjetivosCompletados</div>
+            <div class="okr-stat-label">Completados</div>
+        </div>
+    </div>
+
+    <div class="okr-stat-card">
+        <div class="okr-stat-icon">⚠️</div>
+        <div>
+            <div class="okr-stat-value">@Model.ObjetivosVencidos</div>
+            <div class="okr-stat-label">Vencidos</div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-lg-4">
+        <div class="baykus-card h-100">
+            <h2 class="form-section-title">Avance general</h2>
+            <p class="form-section-subtitle">
+                Promedio de avance de todos los objetivos activos.
+            </p>
+
+            <div class="okr-progress-circle" style="--progress:@Model.AvancePromedio%;">
+                <div class="okr-progress-circle-inner">
+                    <span>@Model.AvancePromedio%</span>
+                    <small>avance</small>
+                </div>
+            </div>
+
+            <div class="progress mt-4" style="height: 10px;">
+                <div class="progress-bar @OkrService.ObtenerClaseProgreso(Model.AvancePromedio)"
+                     style="width: @Model.AvancePromedio%">
+                </div>
+            </div>
+
+            <div class="okr-mini-summary mt-4">
+                <div>
+                    <strong>@Model.ObjetivosPendientes</strong>
+                    <span>Pendientes</span>
+                </div>
+                <div>
+                    <strong>@Model.ObjetivosEnProgreso</strong>
+                    <span>En progreso</span>
+                </div>
+                <div>
+                    <strong>@Model.ObjetivosCompletados</strong>
+                    <span>Completados</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-8">
+        <div class="baykus-card h-100">
+            <div class="d-flex justify-content-between align-items-start mb-3">
+                <div>
+                    <h2 class="form-section-title">Objetivos por sector</h2>
+                    <p class="form-section-subtitle">
+                        Compará la cantidad de objetivos y el avance promedio por sector.
+                    </p>
+                </div>
+            </div>
+
+            @if (Model.ObjetivosPorSector.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table baykus-table align-middle">
+                        <thead>
+                            <tr>
+                                <th>Sector</th>
+                                <th>Total</th>
+                                <th>Completados</th>
+                                <th>Vencidos</th>
+                                <th>Avance</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.ObjetivosPorSector)
+                            {
+                                <tr>
+                                    <td>
+                                        <div class="puesto-nombre">@item.Sector</div>
+                                    </td>
+                                    <td>@item.Total</td>
+                                    <td>@item.Completados</td>
+                                    <td>
+                                        @if (item.Vencidos > 0)
+                                        {
+                                            <span class="baykus-badge-danger">@item.Vencidos</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted">0</span>
+                                        }
+                                    </td>
+                                    <td style="min-width: 170px;">
+                                        <div class="d-flex justify-content-between small mb-1">
+                                            <span>@item.AvancePromedio%</span>
+                                        </div>
+
+                                        <div class="progress" style="height: 8px;">
+                                            <div class="progress-bar @OkrService.ObtenerClaseProgreso(item.AvancePromedio)"
+                                                 style="width: @item.AvancePromedio%">
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <div class="empty-state py-4">
+                    <div class="empty-icon">📊</div>
+                    <h3>Sin información por sector</h3>
+                    <p>
+                        Cuando cargues objetivos, vas a poder ver el avance agrupado por sector.
+                    </p>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-lg-6">
+        <div class="baykus-card h-100">
+            <h2 class="form-section-title">Próximos a vencer</h2>
+            <p class="form-section-subtitle">
+                Objetivos no completados que vencen dentro de los próximos 15 días.
+            </p>
+
+            @if (Model.ProximosAVencer.Any())
+            {
+                <div class="okr-list">
+                    @foreach (var objetivo in Model.ProximosAVencer)
+                    {
+                        <a asp-page="./Details"
+                           asp-route-id="@objetivo.Id"
+                           class="okr-list-item">
+                            <div>
+                                <div class="okr-list-title">@objetivo.Titulo</div>
+                                <div class="okr-list-subtitle">
+                                    @(objetivo.Sector?.Nombre ?? "Sin sector")
+                                    ·
+                                    @(objetivo.EmpleadoResponsable != null
+                                        ? $"{objetivo.EmpleadoResponsable.Nombre} {objetivo.EmpleadoResponsable.Apellido}"
+                                        : "Sin responsable")
+                                </div>
+                            </div>
+
+                            <div class="okr-list-meta">
+                                <span>@objetivo.FechaFin.ToString("dd/MM/yyyy")</span>
+                                <strong>@objetivo.Progreso%</strong>
+                            </div>
+                        </a>
+                    }
+                </div>
+            }
+            else
+            {
+                <div class="empty-state py-4">
+                    <div class="empty-icon">🗓️</div>
+                    <h3>No hay vencimientos cercanos</h3>
+                    <p>
+                        No hay objetivos pendientes que venzan dentro de los próximos 15 días.
+                    </p>
+                </div>
+            }
+        </div>
+    </div>
+
+    <div class="col-lg-6">
+        <div class="baykus-card h-100">
+            <h2 class="form-section-title">Objetivos críticos</h2>
+            <p class="form-section-subtitle">
+                Objetivos vencidos o con bajo avance cerca de la fecha límite.
+            </p>
+
+            @if (Model.ObjetivosCriticos.Any())
+            {
+                <div class="okr-list">
+                    @foreach (var objetivo in Model.ObjetivosCriticos)
+                    {
+                        <a asp-page="./Details"
+                           asp-route-id="@objetivo.Id"
+                           class="okr-list-item okr-list-item-danger">
+                            <div>
+                                <div class="okr-list-title">@objetivo.Titulo</div>
+                                <div class="okr-list-subtitle">
+                                    @(objetivo.Sector?.Nombre ?? "Sin sector")
+                                    ·
+                                    vence @objetivo.FechaFin.ToString("dd/MM/yyyy")
+                                </div>
+                            </div>
+
+                            <div class="okr-list-meta">
+                                <span class="@OkrService.ObtenerClaseEstado(objetivo.Estado)">
+                                    @objetivo.Estado
+                                </span>
+                                <strong>@objetivo.Progreso%</strong>
+                            </div>
+                        </a>
+                    }
+                </div>
+            }
+            else
+            {
+                <div class="empty-state py-4">
+                    <div class="empty-icon">✅</div>
+                    <h3>Sin objetivos críticos</h3>
+                    <p>
+                        No hay objetivos vencidos ni con bajo avance cercano a la fecha límite.
+                    </p>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<div class="baykus-card">
+    <div class="d-flex justify-content-between align-items-start mb-3">
+        <div>
+            <h2 class="form-section-title">Últimos objetivos creados</h2>
+            <p class="form-section-subtitle">
+                Acceso rápido a los objetivos cargados recientemente.
+            </p>
+        </div>
+
+        <a asp-page="./Index" class="btn btn-outline-secondary btn-sm">
+            Ver todos
+        </a>
+    </div>
+
+    @if (Model.UltimosObjetivos.Any())
+    {
+        <div class="table-responsive">
+            <table class="table baykus-table align-middle">
+                <thead>
+                    <tr>
+                        <th>Objetivo</th>
+                        <th>Sector</th>
+                        <th>Responsable</th>
+                        <th>Fecha fin</th>
+                        <th>Avance</th>
+                        <th>Estado</th>
+                        <th class="text-end">Acción</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.UltimosObjetivos)
+                    {
+                        <tr>
+                            <td>
+                                <div class="puesto-nombre">@item.Titulo</div>
+                                <div class="text-muted small">
+                                    @(item.Puesto?.Nombre ?? "Todos los puestos")
+                                </div>
+                            </td>
+
+                            <td>
+                                @(item.Sector?.Nombre ?? "Sin sector")
+                            </td>
+
+                            <td>
+                                @if (item.EmpleadoResponsable != null)
+                                {
+                                    @($"{item.EmpleadoResponsable.Nombre} {item.EmpleadoResponsable.Apellido}")
+                                }
+                                else
+                                {
+                                    <span class="text-muted">Sin responsable</span>
+                                }
+                            </td>
+
+                            <td>
+                                @item.FechaFin.ToString("dd/MM/yyyy")
+                            </td>
+
+                            <td style="min-width: 150px;">
+                                <div class="d-flex justify-content-between small mb-1">
+                                    <span>@item.Progreso%</span>
+                                </div>
+
+                                <div class="progress" style="height: 8px;">
+                                    <div class="progress-bar @OkrService.ObtenerClaseProgreso(item.Progreso)"
+                                         style="width: @item.Progreso%">
+                                    </div>
+                                </div>
+                            </td>
+
+                            <td>
+                                <span class="@OkrService.ObtenerClaseEstado(item.Estado)">
+                                    @item.Estado
+                                </span>
+                            </td>
+
+                            <td>
+                                <div class="acciones-tabla">
+                                    <a asp-page="./Details"
+                                       asp-route-id="@item.Id"
+                                       class="btn btn-sm btn-outline-secondary">
+                                        Ver
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    else
+    {
+        <div class="empty-state">
+            <div class="empty-icon">🎯</div>
+            <h3>No hay objetivos cargados</h3>
+            <p>
+                Creá el primer objetivo para empezar a medir avances por sector, puesto y responsable.
+            </p>
+
+            <a asp-page="./Create" class="btn btn-primary">
+                Crear objetivo
+            </a>
+        </div>
+    }
+</div>
