@@ -1,0 +1,162 @@
+﻿@page "{id:int}"
+@model Baykus.Web.Pages.OkrPages.DeleteModel
+@using Baykus.Web.Services
+
+@{
+    ViewData["Title"] = "Eliminar objetivo";
+}
+
+<div class="page-header mb-4">
+    <div>
+        <h1 class="page-title">Eliminar objetivo</h1>
+        <p class="page-subtitle">
+            Confirmá si querés eliminar este objetivo y toda su información asociada.
+        </p>
+    </div>
+
+    <a asp-page="./Details" asp-route-id="@Model.Objetivo.Id" class="btn btn-light btn-volver">
+        ← Volver
+    </a>
+</div>
+
+<div class="baykus-card employee-detail-card">
+    <div class="employee-profile-header mb-4">
+        <div class="employee-profile-main">
+            <div class="employee-avatar" style="font-size: 2.4rem !important">
+                ⚠️
+            </div>
+
+            <div>
+                <div class="employee-profile-name">
+                    @Model.Objetivo.Titulo
+                </div>
+
+                <div class="employee-profile-subtitle">
+                    @(Model.Objetivo.Sector?.Nombre ?? "Sin sector")
+                    ·
+                    @(Model.Objetivo.Puesto?.Nombre ?? "Todos los puestos")
+                </div>
+            </div>
+        </div>
+
+        <div class="employee-profile-actions">
+            <span class="@OkrService.ObtenerClaseEstado(Model.Objetivo.Estado)">
+                @Model.Objetivo.Estado
+            </span>
+        </div>
+    </div>
+
+    <div class="alert alert-danger rounded-4 mb-4">
+        <strong>Atención:</strong> esta acción no se puede deshacer.
+        Al eliminar el objetivo también se eliminarán sus resultados clave y seguimientos registrados.
+    </div>
+
+    <div class="detail-section">
+        <div class="detail-list">
+
+            <div class="detail-item">
+                <div class="detail-label">
+                    Objetivo
+                </div>
+                <div class="detail-value">
+                    @Model.Objetivo.Titulo
+                </div>
+            </div>
+
+            <div class="detail-item">
+                <div class="detail-label">
+                    Responsable
+                </div>
+                <div class="detail-value">
+                    @if (Model.Objetivo.EmpleadoResponsable != null)
+                    {
+                        @($"{Model.Objetivo.EmpleadoResponsable.Nombre} {Model.Objetivo.EmpleadoResponsable.Apellido}")
+                    }
+                    else
+                    {
+                        <span class="text-muted">Sin responsable</span>
+                    }
+                </div>
+            </div>
+
+            <div class="detail-item">
+                <div class="detail-label">
+                    Sector
+                </div>
+                <div class="detail-value">
+                    @(Model.Objetivo.Sector?.Nombre ?? "Sin sector")
+                </div>
+            </div>
+
+            <div class="detail-item">
+                <div class="detail-label">
+                    Puesto
+                </div>
+                <div class="detail-value">
+                    @(Model.Objetivo.Puesto?.Nombre ?? "Todos los puestos del sector")
+                </div>
+            </div>
+
+            <div class="detail-item">
+                <div class="detail-label">
+                    Período
+                </div>
+                <div class="detail-value">
+                    @Model.Objetivo.FechaInicio.ToString("dd/MM/yyyy")
+                    -
+                    @Model.Objetivo.FechaFin.ToString("dd/MM/yyyy")
+                </div>
+            </div>
+
+            <div class="detail-item">
+                <div class="detail-label">
+                    Avance
+                </div>
+                <div class="detail-value">
+                    <div class="d-flex justify-content-between small mb-1">
+                        <span>@Model.Objetivo.Progreso%</span>
+                    </div>
+
+                    <div class="progress" style="height: 10px;">
+                        <div class="progress-bar @OkrService.ObtenerClaseProgreso(Model.Objetivo.Progreso)"
+                             style="width: @Model.Objetivo.Progreso%">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="detail-item">
+                <div class="detail-label">
+                    Resultados clave asociados
+                </div>
+                <div class="detail-value">
+                    @Model.CantidadResultadosClave
+                </div>
+            </div>
+
+            <div class="detail-item">
+                <div class="detail-label">
+                    Seguimientos asociados
+                </div>
+                <div class="detail-value">
+                    @Model.CantidadSeguimientos
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <form method="post" class="form-actions mt-4">
+        <input type="hidden" asp-for="Objetivo.Id" />
+
+        <a asp-page="./Details"
+           asp-route-id="@Model.Objetivo.Id"
+           class="btn btn-outline-secondary btn-form">
+            Cancelar
+        </a>
+
+        <button type="submit" class="btn btn-danger btn-form">
+            Eliminar objetivo
+        </button>
+    </form>
+</div>

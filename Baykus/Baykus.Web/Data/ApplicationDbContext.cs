@@ -17,5 +17,8 @@ namespace Baykus.Web.Data
         public DbSet<Empleado> Empleados { get; set; }
         public DbSet<Puesto> Puestos { get; set; }
         public DbSet<Sector> Sector { get; set; }
+        public DbSet<ObjetivoOkr> ObjetivosOkr { get; set; }
+        public DbSet<ResultadoClaveOkr> ResultadosClaveOkr { get; set; }
+        public DbSet<SeguimientoOkr> SeguimientosOkr { get; set; }
     }
 }

@@ -1201,4 +1201,49 @@ a {
 .sidebar-sublink.active .sidebar-dot {
     opacity: 1;
 }
+.okr-timeline {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.okr-timeline-item {
+    border-left: 3px solid rgba(59, 130, 246, 0.35);
+    padding-left: 1rem;
+    padding-bottom: 0.5rem;
+}
+
+.okr-timeline-date {
+    font-size: 0.82rem;
+    color: #6b7280;
+    margin-bottom: 0.25rem;
+}
+
+.okr-timeline-text {
+    font-size: 0.95rem;
+    color: #111827;
+    margin-bottom: 0.25rem;
+}
+
+.baykus-badge-info {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.35rem 0.7rem;
+    border-radius: 999px;
+    background: #e0f2fe;
+    color: #0369a1;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.baykus-badge-danger {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.35rem 0.7rem;
+    border-radius: 999px;
+    background: #fee2e2;
+    color: #b91c1c;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
 

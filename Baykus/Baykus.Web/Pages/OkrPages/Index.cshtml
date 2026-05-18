@@ -1,0 +1,166 @@
+﻿@page
+@model Baykus.Web.Pages.OkrPages.IndexModel
+@using Baykus.Web.Services
+
+@{
+    ViewData["Title"] = "Objetivos / OKR";
+}
+
+<div class="page-header mb-4">
+    <div>
+        <h1 class="page-title">Objetivos / OKR</h1>
+        <p class="page-subtitle">
+            Definí objetivos por sector, asigná responsables y seguí el avance de cada resultado clave.
+        </p>
+    </div>
+
+    <a asp-page="Create" class="btn btn-primary btn-nuevo">
+        <span class="me-1">＋</span>
+        Nuevo objetivo
+    </a>
+</div>
+
+<div class="baykus-card mb-4">
+    <form method="get" class="row g-3 align-items-end">
+        <div class="col-md-4">
+            <label class="form-label baykus-label">Sector</label>
+            <select name="sectorId" asp-items="Model.SectoresSelectList" class="form-select baykus-input">
+                <option value="">Todos los sectores</option>
+            </select>
+        </div>
+
+        <div class="col-md-4">
+            <label class="form-label baykus-label">Estado</label>
+            <select name="estado" class="form-select baykus-input">
+                <option value="">Todos los estados</option>
+                <option value="Pendiente" selected="@(Model.Estado == "Pendiente")">Pendiente</option>
+                <option value="En progreso" selected="@(Model.Estado == "En progreso")">En progreso</option>
+                <option value="Completado" selected="@(Model.Estado == "Completado")">Completado</option>
+                <option value="Vencido" selected="@(Model.Estado == "Vencido")">Vencido</option>
+            </select>
+        </div>
+
+        <div class="col-md-4 d-flex gap-2">
+            <button class="btn btn-primary btn-form" type="submit">
+                Filtrar
+            </button>
+
+            <a asp-page="./Index" class="btn btn-outline-secondary btn-form">
+                Limpiar
+            </a>
+        </div>
+    </form>
+</div>
+
+<div class="card baykus-card">
+    <div class="card-body">
+
+        @if (Model.Objetivos.Any())
+        {
+            <div class="table-responsive">
+                <table class="table baykus-table align-middle">
+                    <thead>
+                        <tr>
+                            <th>Objetivo</th>
+                            <th>Sector</th>
+                            <th>Responsable</th>
+                            <th>Fecha fin</th>
+                            <th>Avance</th>
+                            <th>Estado</th>
+                            <th class="text-end">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.Objetivos)
+                        {
+                            <tr>
+                                <td>
+                                    <div class="puesto-nombre">
+                                        @item.Titulo
+                                    </div>
+                                    <div class="text-muted small">
+                                        @(item.Puesto?.Nombre ?? "Todos los puestos del sector")
+                                    </div>
+                                </td>
+
+                                <td>
+                                    @(item.Sector?.Nombre ?? "Sin sector")
+                                </td>
+
+                                <td>
+                                    @if (item.EmpleadoResponsable != null)
+                                    {
+                                        <span>@item.EmpleadoResponsable.Nombre @item.EmpleadoResponsable.Apellido</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">Sin responsable</span>
+                                    }
+                                </td>
+
+                                <td>
+                                    @item.FechaFin.ToString("dd/MM/yyyy")
+                                </td>
+
+                                <td style="min-width: 160px;">
+                                    <div class="d-flex justify-content-between small mb-1">
+                                        <span>@item.Progreso%</span>
+                                    </div>
+
+                                    <div class="progress" style="height: 8px;">
+                                        <div class="progress-bar @OkrService.ObtenerClaseProgreso(item.Progreso)"
+                                             style="width: @item.Progreso%">
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <td>
+                                    <span class="@OkrService.ObtenerClaseEstado(item.Estado)">
+                                        @item.Estado
+                                    </span>
+                                </td>
+
+                                <td>
+                                    <div class="acciones-tabla">
+                                        <a asp-page="./Details"
+                                           asp-route-id="@item.Id"
+                                           class="btn btn-sm btn-outline-secondary">
+                                            Ver
+                                        </a>
+
+                                        <a asp-page="./Edit"
+                                           asp-route-id="@item.Id"
+                                           class="btn btn-sm btn-outline-primary">
+                                            Editar
+                                        </a>
+
+                                        <a asp-page="./Delete"
+                                           asp-route-id="@item.Id"
+                                           class="btn btn-sm btn-outline-danger">
+                                            Eliminar
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <div class="empty-state">
+                <div class="empty-icon">🎯</div>
+                <h3>No hay objetivos cargados</h3>
+                <p>
+                    Creá el primer objetivo para empezar a medir avances por sector, puesto y responsable.
+                </p>
+
+                <a asp-page="Create" class="btn btn-primary">
+                    Crear objetivo
+                </a>
+            </div>
+        }
+
+    </div>
+</div>

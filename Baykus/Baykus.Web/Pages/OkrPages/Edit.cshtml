@@ -1,0 +1,267 @@
+﻿@page "{id:int}"
+@model Baykus.Web.Pages.OkrPages.EditModel
+
+@{
+    ViewData["Title"] = "Editar objetivo";
+}
+
+<div class="page-header mb-4">
+    <div>
+        <h1 class="page-title">Editar objetivo</h1>
+        <p class="page-subtitle">
+            Actualizá la información principal del objetivo, su responsable y el período de seguimiento.
+        </p>
+    </div>
+
+    <a asp-page="./Index" asp-route-id="@Model.Objetivo.Id" class="btn btn-light btn-volver">
+        ← Volver
+    </a>
+</div>
+
+<div class="form-card">
+    <form method="post">
+        <div asp-validation-summary="ModelOnly" class="alert alert-danger mb-4"></div>
+
+        <input type="hidden" asp-for="Objetivo.Id" />
+        <input type="hidden" asp-for="Objetivo.FechaCreacion" />
+        <input type="hidden" asp-for="Objetivo.Progreso" />
+        <input type="hidden" asp-for="Objetivo.Estado" />
+
+        <div class="form-section">
+            <h2 class="form-section-title">Información del objetivo</h2>
+            <p class="form-section-subtitle">
+                Modificá el objetivo sin perder sus resultados clave ni el historial de seguimiento.
+            </p>
+
+            <div class="mb-4">
+                <label asp-for="Objetivo.Titulo" class="form-label">
+                    Título del objetivo <span class="text-danger">*</span>
+                </label>
+
+                <input asp-for="Objetivo.Titulo"
+                       class="form-control baykus-input"
+                       placeholder="Ej: Mejorar la atención al cliente"
+                       autocomplete="off" />
+
+                <span asp-validation-for="Objetivo.Titulo" class="text-danger small"></span>
+            </div>
+
+            <div class="mb-4">
+                <label asp-for="Objetivo.Descripcion" class="form-label">
+                    Descripción
+                </label>
+
+                <textarea asp-for="Objetivo.Descripcion"
+                          class="form-control baykus-input"
+                          rows="4"
+                          placeholder="Explicá brevemente qué se quiere lograr y por qué es importante"></textarea>
+
+                <span asp-validation-for="Objetivo.Descripcion" class="text-danger small"></span>
+            </div>
+
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <label asp-for="Objetivo.SectorId" class="form-label">
+                        Sector <span class="text-danger">*</span>
+                    </label>
+
+                    <select asp-for="Objetivo.SectorId"
+                            asp-items="Model.SectoresSelectList"
+                            class="form-select baykus-input"
+                            id="sectorSelect">
+                        <option value="">Seleccionar sector</option>
+                    </select>
+
+                    <span asp-validation-for="Objetivo.SectorId" class="text-danger small"></span>
+                </div>
+
+                <div class="col-md-4">
+                    <label asp-for="Objetivo.PuestoId" class="form-label">
+                        Puesto
+                    </label>
+
+                    <select asp-for="Objetivo.PuestoId"
+                            asp-items="Model.PuestosSelectList"
+                            class="form-select baykus-input"
+                            id="puestoSelect">
+                        <option value="">Todos los puestos del sector</option>
+                    </select>
+
+                    <span asp-validation-for="Objetivo.PuestoId" class="text-danger small"></span>
+                </div>
+
+                <div class="col-md-4">
+                    <label asp-for="Objetivo.EmpleadoResponsableId" class="form-label">
+                        Responsable <span class="text-danger">*</span>
+                    </label>
+
+                    <select asp-for="Objetivo.EmpleadoResponsableId"
+                            asp-items="Model.EmpleadosSelectList"
+                            class="form-select baykus-input"
+                            id="empleadoSelect">
+                        <option value="">Seleccionar responsable</option>
+                    </select>
+
+                    <span asp-validation-for="Objetivo.EmpleadoResponsableId" class="text-danger small"></span>
+                </div>
+            </div>
+
+            <div class="row g-4 mt-1">
+                <div class="col-md-6">
+                    <label asp-for="Objetivo.FechaInicio" class="form-label">
+                        Fecha de inicio <span class="text-danger">*</span>
+                    </label>
+
+                    <input asp-for="Objetivo.FechaInicio"
+                           type="date"
+                           class="form-control baykus-input" />
+
+                    <span asp-validation-for="Objetivo.FechaInicio" class="text-danger small"></span>
+                </div>
+
+                <div class="col-md-6">
+                    <label asp-for="Objetivo.FechaFin" class="form-label">
+                        Fecha de fin <span class="text-danger">*</span>
+                    </label>
+
+                    <input asp-for="Objetivo.FechaFin"
+                           type="date"
+                           class="form-control baykus-input" />
+
+                    <span asp-validation-for="Objetivo.FechaFin" class="text-danger small"></span>
+                </div>
+            </div>
+
+            <div class="estado-box mt-4">
+                <div>
+                    <label asp-for="Objetivo.Activo" class="estado-title">
+                        Objetivo activo
+                    </label>
+                    <p class="estado-subtitle">
+                        Si está activo, se tendrá en cuenta dentro del módulo de objetivos.
+                    </p>
+                </div>
+
+                <div class="form-check form-switch">
+                    <input asp-for="Objetivo.Activo"
+                           class="form-check-input estado-switch"
+                           type="checkbox" />
+                </div>
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <a asp-page="./Index"
+               asp-route-id="@Model.Objetivo.Id"
+               class="btn btn-outline-secondary btn-form">
+                Cancelar
+            </a>
+
+            <button type="submit" class="btn btn-primary btn-form">
+                Guardar cambios
+            </button>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        const puestos = @Html.Raw(Model.PuestosJson);
+        const empleados = @Html.Raw(Model.EmpleadosJson);
+
+        const sectorSelect = document.getElementById("sectorSelect");
+        const puestoSelect = document.getElementById("puestoSelect");
+        const empleadoSelect = document.getElementById("empleadoSelect");
+
+        const puestoSeleccionadoInicial = "@Model.Objetivo.PuestoId";
+        const empleadoSeleccionadoInicial = "@Model.Objetivo.EmpleadoResponsableId";
+
+        function cargarPuestos(mantenerSeleccion = false) {
+            const sectorId = sectorSelect.value;
+
+            puestoSelect.innerHTML = "";
+
+            const opcionTodos = document.createElement("option");
+            opcionTodos.value = "";
+            opcionTodos.textContent = sectorId ? "Todos los puestos del sector" : "Primero seleccioná un sector";
+            puestoSelect.appendChild(opcionTodos);
+
+            if (!sectorId) {
+                puestoSelect.disabled = true;
+                return;
+            }
+
+            const puestosFiltrados = puestos.filter(p => p.sectorId == sectorId);
+
+            puestosFiltrados.forEach(puesto => {
+                const option = document.createElement("option");
+                option.value = puesto.id;
+                option.textContent = puesto.nombre;
+
+                if (mantenerSeleccion && puestoSeleccionadoInicial && puestoSeleccionadoInicial == puesto.id) {
+                    option.selected = true;
+                }
+
+                puestoSelect.appendChild(option);
+            });
+
+            puestoSelect.disabled = false;
+        }
+
+        function cargarEmpleados(mantenerSeleccion = false) {
+            const sectorId = sectorSelect.value;
+            const puestoId = puestoSelect.value;
+
+            empleadoSelect.innerHTML = "";
+
+            const optionDefault = document.createElement("option");
+            optionDefault.value = "";
+            optionDefault.textContent = sectorId ? "Seleccionar responsable" : "Primero seleccioná un sector";
+            empleadoSelect.appendChild(optionDefault);
+
+            if (!sectorId) {
+                empleadoSelect.disabled = true;
+                return;
+            }
+
+            const empleadosFiltrados = empleados.filter(e =>
+                e.sectorId == sectorId &&
+                (!puestoId || e.puestoId == puestoId)
+            );
+
+            empleadosFiltrados.forEach(empleado => {
+                const option = document.createElement("option");
+                option.value = empleado.id;
+                option.textContent = empleado.nombre;
+
+                if (mantenerSeleccion && empleadoSeleccionadoInicial && empleadoSeleccionadoInicial == empleado.id) {
+                    option.selected = true;
+                }
+
+                empleadoSelect.appendChild(option);
+            });
+
+            empleadoSelect.disabled = empleadosFiltrados.length === 0;
+
+            if (empleadosFiltrados.length === 0) {
+                optionDefault.textContent = "No hay empleados disponibles para esta selección";
+            }
+        }
+
+        sectorSelect.addEventListener("change", function () {
+            cargarPuestos(false);
+            cargarEmpleados(false);
+        });
+
+        puestoSelect.addEventListener("change", function () {
+            cargarEmpleados(false);
+        });
+
+        cargarPuestos(true);
+        cargarEmpleados(true);
+    </script>
+}
