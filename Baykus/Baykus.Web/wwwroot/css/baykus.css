@@ -680,7 +680,7 @@ a {
     border: 1px solid #b8e5df;
     border-radius: 999px;
     padding: 7px 11px;
-    font-weight: 800;
+    font-weight: 600;
 }
 
 .baykus-badge-muted {
@@ -689,7 +689,7 @@ a {
     border: 1px solid #d8e6e3;
     border-radius: 999px;
     padding: 7px 11px;
-    font-weight: 800;
+    font-weight: 600;
 }
 
 @media (max-width: 768px) {
@@ -1432,5 +1432,56 @@ a {
     .okr-mini-summary {
         grid-template-columns: 1fr;
     }
+}
+.acciones-col {
+    min-width: 230px;
+    white-space: nowrap;
+}
+
+.acciones-tabla {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: nowrap;
+}
+
+    .acciones-tabla .btn {
+        white-space: nowrap;
+    }
+.vencidos-cell {
+    width: 120px;
+}
+
+    .vencidos-cell,
+    .vencidos-cell .vencidos-cero,
+    .vencidos-cell .baykus-badge-danger {
+        text-align: center;
+    }
+
+.vencidos-cell {
+    display: table-cell;
+    vertical-align: middle;
+}
+
+    .vencidos-cell .vencidos-cero {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 34px;
+        height: 34px;
+    }
+
+.baykus-badge-danger {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 34px;
+    height: 34px;
+    border-radius: 999px;
+    background: #fee2e2;
+    color: #b91c1c;
+    font-size: 0.8rem;
+    font-weight: 600;
 }
 

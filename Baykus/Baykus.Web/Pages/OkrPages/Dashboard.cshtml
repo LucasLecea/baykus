@@ -129,16 +129,16 @@
                                     <td>
                                         <div class="puesto-nombre">@item.Sector</div>
                                     </td>
-                                    <td>@item.Total</td>
-                                    <td>@item.Completados</td>
-                                    <td>
+                                    <td class="text-center">@item.Total</td>
+                                    <td class="text-center">@item.Completados</td>
+                                    <td class="vencidos-cell">
                                         @if (item.Vencidos > 0)
                                         {
                                             <span class="baykus-badge-danger">@item.Vencidos</span>
                                         }
                                         else
                                         {
-                                            <span class="text-muted">0</span>
+                                            <span class="vencidos-cero">0</span>
                                         }
                                     </td>
                                     <td style="min-width: 170px;">
