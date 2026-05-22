@@ -20,5 +20,11 @@ namespace Baykus.Web.Data
         public DbSet<ObjetivoOkr> ObjetivosOkr { get; set; }
         public DbSet<ResultadoClaveOkr> ResultadosClaveOkr { get; set; }
         public DbSet<SeguimientoOkr> SeguimientosOkr { get; set; }
+        public DbSet<JornadaLaboral> JornadasLaborales { get; set; }
+        public DbSet<EmpleadoHistorialLaboral> EmpleadosHistorialLaboral { get; set; }
+        public DbSet<PlanillaHoraria> PlanillasHorarias { get; set; }
+        public DbSet<PlanillaHorariaDetalle> PlanillasHorariasDetalles { get; set; }
+        public DbSet<PlanillaHorariaHistorial> PlanillasHorariasHistorial { get; set; }
+        public DbSet<Feriado> Feriados { get; set; }
     }
 }

@@ -39,5 +39,19 @@ namespace Baykus.Web.Models
         public bool Activo { get; set; } = true;
 
         public DateTime FechaAlta { get; set; } = DateTime.Now;
+
+        public string? Legajo { get; set; }
+        public string? Cuil { get; set; }
+
+        public int? JornadaLaboralId { get; set; }
+        public JornadaLaboral? JornadaLaboral { get; set; }
+
+        public bool RequiereCargaHoraria { get; set; } = true;
+
+        public DateTime? FechaBaja { get; set; }
+        public string? MotivoBaja { get; set; }
+
+        public ICollection<PlanillaHoraria> PlanillasHorarias { get; set; } = new List<PlanillaHoraria>();
+        public ICollection<EmpleadoHistorialLaboral> HistorialLaboral { get; set; } = new List<EmpleadoHistorialLaboral>();
     }
 }
