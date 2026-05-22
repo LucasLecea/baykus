@@ -1,4 +1,6 @@
-﻿namespace Baykus.Web.Models
+﻿using Baykus.Web.Models.Enums;
+
+namespace Baykus.Web.Models
 {
     public class PlanillaHorariaDetalle
     {
@@ -32,26 +34,5 @@
 
         public DateTime FechaCarga { get; set; } = DateTime.Now;
         public DateTime? FechaUltimaModificacion { get; set; }
-    }
-    public enum TipoDiaPlanilla
-    {
-        Trabajado = 1,
-        Franco = 2,
-        Ausente = 3,
-        Licencia = 4,
-        Vacaciones = 5,
-        Feriado = 6,
-        Suspencion = 7
-    }
-
-    public enum TipoAusencia
-    {
-        SinJustificar = 1,
-        Enfermedad = 2,
-        Vacaciones = 3,
-        Licencia = 4,
-        PermisoEspecial = 5,
-        Feriado = 6,
-        Franco = 7
     }
 }

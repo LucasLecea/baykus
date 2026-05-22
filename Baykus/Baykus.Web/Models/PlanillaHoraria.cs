@@ -1,4 +1,6 @@
-﻿namespace Baykus.Web.Models
+﻿using Baykus.Web.Models.Enums;
+
+namespace Baykus.Web.Models
 {
     public class PlanillaHoraria
     {
@@ -41,13 +43,5 @@
         public string? JornadaNombreSnapshot { get; set; }
 
         public ICollection<PlanillaHorariaDetalle> Detalles { get; set; } = new List<PlanillaHorariaDetalle>();
-    }
-    public enum EstadoPlanillaHoraria
-    {
-        Borrador = 1,
-        Presentada = 2,
-        Aprobada = 3,
-        Rechazada = 4,
-        Cerrada = 5
     }
 }

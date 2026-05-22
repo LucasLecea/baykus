@@ -1,4 +1,6 @@
-﻿namespace Baykus.Web.Models
+﻿using Baykus.Web.Models.Enums;
+
+namespace Baykus.Web.Models
 {
     public class PlanillaHorariaHistorial
     {
