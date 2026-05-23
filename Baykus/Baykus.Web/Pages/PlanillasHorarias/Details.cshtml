@@ -1,0 +1,326 @@
+﻿@page "{id:int}"
+@model Baykus.Web.Pages.PlanillasHorarias.DetailsModel
+@using Baykus.Web.Models.Enums
+
+@{
+    ViewData["Title"] = "Revisión de planilla";
+    var planilla = Model.Planilla!;
+}
+
+<div class="baykus-page-header">
+    <div>
+        <h1>Revisión de planilla horaria</h1>
+        <p>Analizá el detalle cargado por el empleado y registrá la decisión de RRHH.</p>
+    </div>
+
+    <div class="baykus-page-actions">
+        <a asp-page="./Index" class="btn btn-outline-secondary">
+            Volver
+        </a>
+    </div>
+</div>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["Success"]
+    </div>
+}
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">
+        @TempData["Error"]
+    </div>
+}
+
+<div class="baykus-card mb-4">
+    <div class="d-flex justify-content-between align-items-start gap-3 flex-wrap">
+        <div>
+            <span class="baykus-status-badge @GetEstadoClass(planilla.Estado)">
+                @planilla.Estado
+            </span>
+
+            <h2 class="mt-3 mb-1">
+                @(planilla.EmpleadoNombreSnapshot ?? $"{planilla.Empleado.Apellido}, {planilla.Empleado.Nombre}")
+            </h2>
+
+            <p class="text-muted mb-0">
+                Período: @planilla.FechaDesde.ToString("dd/MM/yyyy") al @planilla.FechaHasta.ToString("dd/MM/yyyy")
+            </p>
+        </div>
+
+        @if (planilla.Estado == EstadoPlanillaHoraria.Presentada)
+        {
+            <div class="d-flex gap-2">
+                <form method="post" asp-page-handler="Aprobar" asp-route-id="@planilla.Id">
+                    <input type="hidden" name="ObservacionAprobador" value="Planilla revisada y aprobada por RRHH." />
+                    <button type="submit" class="btn btn-success">
+                        Aprobar planilla
+                    </button>
+                </form>
+
+                <button type="button"
+                        class="btn btn-outline-danger"
+                        data-bs-toggle="modal"
+                        data-bs-target="#modalRechazarPlanilla">
+                    Rechazar
+                </button>
+            </div>
+        }
+    </div>
+
+    <hr />
+
+    <div class="row g-3">
+        <div class="col-md-3">
+            <small class="text-muted">Empleado</small>
+            <div class="fw-semibold">
+                @(planilla.EmpleadoNombreSnapshot ?? $"{planilla.Empleado.Apellido}, {planilla.Empleado.Nombre}")
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <small class="text-muted">DNI</small>
+            <div class="fw-semibold">
+                @(planilla.EmpleadoDniSnapshot ?? planilla.Empleado.Dni ?? "-")
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <small class="text-muted">Sector</small>
+            <div class="fw-semibold">
+                @(planilla.SectorNombreSnapshot ?? planilla.Empleado.Sector?.Nombre ?? "-")
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <small class="text-muted">Puesto</small>
+            <div class="fw-semibold">
+                @(planilla.PuestoNombreSnapshot ?? planilla.Empleado.Puesto?.Nombre ?? "-")
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-md-2">
+        <div class="baykus-kpi-card">
+            <span>Total horas</span>
+            <strong>@planilla.TotalHorasTrabajadas</strong>
+        </div>
+    </div>
+
+    <div class="col-md-2">
+        <div class="baykus-kpi-card">
+            <span>Normales</span>
+            <strong>@planilla.TotalHorasNormales</strong>
+        </div>
+    </div>
+
+    <div class="col-md-2">
+        <div class="baykus-kpi-card">
+            <span>Extra 50%</span>
+            <strong>@planilla.TotalHorasExtra50</strong>
+        </div>
+    </div>
+
+    <div class="col-md-2">
+        <div class="baykus-kpi-card">
+            <span>Extra 100%</span>
+            <strong>@planilla.TotalHorasExtra100</strong>
+        </div>
+    </div>
+
+    <div class="col-md-2">
+        <div class="baykus-kpi-card">
+            <span>Nocturnas</span>
+            <strong>@planilla.TotalHorasNocturnas</strong>
+        </div>
+    </div>
+
+    <div class="col-md-2">
+        <div class="baykus-kpi-card">
+            <span>Feriado</span>
+            <strong>@planilla.TotalHorasFeriado</strong>
+        </div>
+    </div>
+</div>
+
+<div class="baykus-card mb-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <div>
+            <h2 class="form-section-title mb-1">Detalle diario</h2>
+            <p class="form-section-subtitle mb-0">
+                Revisión de entradas, salidas, descansos y horas computadas.
+            </p>
+        </div>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table baykus-table align-middle">
+            <thead>
+                <tr>
+                    <th>Fecha</th>
+                    <th>Tipo</th>
+                    <th>Entrada</th>
+                    <th>Salida</th>
+                    <th>Descanso</th>
+                    <th>Normales</th>
+                    <th>Extra 50</th>
+                    <th>Extra 100</th>
+                    <th>Feriado</th>
+                    <th>Total</th>
+                    <th>Observación</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var detalle in Model.Detalles)
+                {
+                    <tr class="@(detalle.EsFeriado || detalle.EsFinDeSemana ? "baykus-row-soft" : "")">
+                        <td>
+                            <strong>@detalle.Fecha.ToString("dd/MM/yyyy")</strong>
+                        </td>
+
+                        <td>
+                            <span class="baykus-mini-badge @GetTipoDiaClass(detalle.TipoDia)">
+                                @detalle.TipoDia
+                            </span>
+                        </td>
+
+                        <td>@(detalle.HoraEntrada?.ToString("HH:mm") ?? "-")</td>
+                        <td>@(detalle.HoraSalida?.ToString("HH:mm") ?? "-")</td>
+                        <td>@detalle.MinutosDescanso min</td>
+                        <td>@detalle.HorasNormales</td>
+                        <td>@detalle.HorasExtra50</td>
+                        <td>@detalle.HorasExtra100</td>
+                        <td>@detalle.HorasFeriado</td>
+                        <td><strong>@detalle.TotalHoras</strong></td>
+                        <td class="text-muted">
+                            @(string.IsNullOrWhiteSpace(detalle.Observacion) ? "-" : detalle.Observacion)
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-6">
+        <div class="baykus-card h-100">
+            <h2 class="form-section-title mb-3">Observaciones</h2>
+
+            <div class="mb-3">
+                <small class="text-muted">Observación del empleado</small>
+                <div class="baykus-note-box">
+                    @(string.IsNullOrWhiteSpace(planilla.ObservacionEmpleado) ? "Sin observaciones." : planilla.ObservacionEmpleado)
+                </div>
+            </div>
+
+            <div>
+                <small class="text-muted">Observación de RRHH / aprobador</small>
+                <div class="baykus-note-box">
+                    @(string.IsNullOrWhiteSpace(planilla.ObservacionAprobador) ? "Sin observaciones." : planilla.ObservacionAprobador)
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-6">
+        <div class="baykus-card h-100">
+            <h2 class="form-section-title mb-3">Historial de la planilla</h2>
+
+            @if (Model.Historial.Any())
+            {
+                <div class="baykus-timeline">
+                    @foreach (var item in Model.Historial)
+                    {
+                        <div class="baykus-timeline-item">
+                            <div class="baykus-timeline-dot"></div>
+                            <div>
+                                <strong>@item.EstadoNuevo</strong>
+                                <p class="mb-1">@item.Comentario</p>
+                                <small class="text-muted">
+                                    @item.Fecha.ToString("dd/MM/yyyy HH:mm") - @(item.UsuarioId ?? "Sistema")
+                                </small>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+            else
+            {
+                <p class="text-muted mb-0">La planilla todavía no tiene historial registrado.</p>
+            }
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalRechazarPlanilla" tabindex="-1" aria-labelledby="modalRechazarPlanillaLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content baykus-modal">
+            <form method="post" asp-page-handler="Rechazar" asp-route-id="@planilla.Id">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalRechazarPlanillaLabel">
+                        Rechazar planilla
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+
+                <div class="modal-body">
+                    <p class="text-muted">
+                        Indicá el motivo del rechazo para que el empleado pueda corregir la carga.
+                    </p>
+
+                    <label class="form-label">Observación</label>
+                    <textarea name="ObservacionAprobador"
+                              class="form-control"
+                              rows="4"
+                              required
+                              placeholder="Ej: Revisar diferencias horarias del día 12/05 y justificar ausencia del día 18/05."></textarea>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                        Cancelar
+                    </button>
+
+                    <button type="submit" class="btn btn-danger">
+                        Confirmar rechazo
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@functions {
+    private string GetEstadoClass(EstadoPlanillaHoraria estado)
+    {
+        return estado switch
+        {
+            EstadoPlanillaHoraria.Borrador => "status-muted",
+            EstadoPlanillaHoraria.Presentada => "status-warning",
+            EstadoPlanillaHoraria.Aprobada => "status-success",
+            EstadoPlanillaHoraria.Rechazada => "status-danger",
+            EstadoPlanillaHoraria.Cerrada => "status-info",
+            _ => "status-muted"
+        };
+    }
+
+    private string GetTipoDiaClass(TipoDiaPlanilla tipoDia)
+    {
+        return tipoDia switch
+        {
+            TipoDiaPlanilla.Trabajado => "mini-success",
+            TipoDiaPlanilla.Franco => "mini-muted",
+            TipoDiaPlanilla.Ausente => "mini-danger",
+            TipoDiaPlanilla.Licencia => "mini-warning",
+            TipoDiaPlanilla.Vacaciones => "mini-info",
+            TipoDiaPlanilla.Feriado => "mini-primary",
+            TipoDiaPlanilla.Suspension => "mini-danger",
+            _ => "mini-muted"
+        };
+    }
+}

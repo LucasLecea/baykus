@@ -3,7 +3,6 @@
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
 
-
 @{
     var currentPath = Context.Request.Path.Value?.ToLower() ?? "";
 
@@ -18,7 +17,9 @@
         IsActive("/SectorPages");
 
     var gestionActivo =
-        IsActive("/OkrPages");
+        IsActive("/OkrPages") ||
+        IsActive("/PlanillasHorarias") ||
+        IsActive("/MiPlanillaHoraria");
 }
 
 <!DOCTYPE html>
@@ -102,15 +103,27 @@
                                 <span>Dashboard OKR</span>
                             </a>
 
-                            <a class="sidebar-sublink @(IsActive("/OkrPages/Index") || IsActive("/OkrPages/Create") || IsActive("/OkrPages/Edit") || IsActive("/OkrPages/Details") || IsActive("/OkrPages/Delete") ? "active" : "")"
+                            <a class="sidebar-sublink @(IsActive("/OkrPages/Index")
+                                                           || IsActive("/OkrPages")
+                                                           || IsActive("/OkrPages/Create")
+                                                           || IsActive("/OkrPages/Edit")
+                                                           || IsActive("/OkrPages/Details")
+                                                           || IsActive("/OkrPages/Delete") ? "active" : "")"
                                asp-page="/OkrPages/Index">
                                 <span class="sidebar-dot"></span>
                                 <span>Objetivos / OKR</span>
                             </a>
 
-                            <a class="sidebar-sublink" href="#">
+                            <a class="sidebar-sublink @(IsActive("/PlanillasHorarias") ? "active" : "")"
+                               asp-page="/PlanillasHorarias/Index">
                                 <span class="sidebar-dot"></span>
                                 <span>Planillas horarias</span>
+                            </a>
+
+                            <a class="sidebar-sublink @(IsActive("/MiPlanillaHoraria") ? "active" : "")"
+                               asp-page="/MiPlanillaHoraria/Index">
+                                <span class="sidebar-dot"></span>
+                                <span>Mi planilla</span>
                             </a>
                         </div>
                     </div>

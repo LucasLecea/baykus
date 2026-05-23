@@ -1,0 +1,172 @@
+﻿@page
+@model Baykus.Web.Pages.PlanillasHorarias.IndexModel
+@using Baykus.Web.Models.Enums
+
+@{
+    ViewData["Title"] = "Planillas horarias";
+}
+
+<div class="baykus-page-header">
+    <div>
+        <h1>Planillas horarias</h1>
+        <p>Revisá, filtrá y gestioná las planillas cargadas por los empleados.</p>
+    </div>
+
+    <div class="baykus-page-actions">
+        <a asp-page="/PlanillasHorarias/Reportes" class="btn btn-outline-primary">
+            Ver reportes
+        </a>
+    </div>
+</div>
+
+<div class="baykus-card mb-4">
+    <form method="get" class="row g-3 align-items-end">
+        <div class="col-md-3">
+            <label class="form-label">Empleado</label>
+            <select asp-for="EmpleadoId" class="form-select">
+                <option value="">Todos</option>
+                @foreach (var empleado in Model.Empleados)
+                {
+                    <option value="@empleado.Id">
+                        @empleado.Apellido, @empleado.Nombre
+                    </option>
+                }
+            </select>
+        </div>
+
+        <div class="col-md-2">
+            <label class="form-label">Sector</label>
+            <select asp-for="SectorId" class="form-select">
+                <option value="">Todos</option>
+                @foreach (var sector in Model.Sectores)
+                {
+                    <option value="@sector.Id">@sector.Nombre</option>
+                }
+            </select>
+        </div>
+
+        <div class="col-md-2">
+            <label class="form-label">Puesto</label>
+            <select asp-for="PuestoId" class="form-select">
+                <option value="">Todos</option>
+                @foreach (var puesto in Model.Puestos)
+                {
+                    <option value="@puesto.Id">@puesto.Nombre</option>
+                }
+            </select>
+        </div>
+
+        <div class="col-md-1">
+            <label class="form-label">Mes</label>
+            <select asp-for="Mes" class="form-select">
+                <option value="">Todos</option>
+                @for (int i = 1; i <= 12; i++)
+                {
+                    <option value="@i">@i</option>
+                }
+            </select>
+        </div>
+
+        <div class="col-md-1">
+            <label class="form-label">Año</label>
+            <input asp-for="Anio" class="form-control" placeholder="2026" />
+        </div>
+
+        <div class="col-md-2">
+            <label class="form-label">Estado</label>
+            <select asp-for="Estado" class="form-select">
+                <option value="">Todos</option>
+                @foreach (EstadoPlanillaHoraria estado in Enum.GetValues(typeof(EstadoPlanillaHoraria)))
+                {
+                    <option value="@estado">@estado</option>
+                }
+            </select>
+        </div>
+
+        <div class="col-md-1 d-grid">
+            <button type="submit" class="btn btn-primary">
+                Filtrar
+            </button>
+        </div>
+    </form>
+</div>
+
+<div class="baykus-card">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <div>
+            <h2 class="form-section-title mb-1">Listado de planillas</h2>
+            <p class="form-section-subtitle mb-0">
+                Total encontradas: @Model.Planillas.Count
+            </p>
+        </div>
+    </div>
+
+    @if (Model.Planillas.Any())
+    {
+        <div class="table-responsive">
+            <table class="table baykus-table align-middle">
+                <thead>
+                    <tr>
+                        <th>Empleado</th>
+                        <th>Sector</th>
+                        <th>Puesto</th>
+                        <th>Período</th>
+                        <th>Estado</th>
+                        <th>Total horas</th>
+                        <th>Extras</th>
+                        <th class="text-end">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var planilla in Model.Planillas)
+                    {
+                        <tr>
+                            <td>
+                                <strong>@planilla.Empleado.Apellido, @planilla.Empleado.Nombre</strong>
+                            </td>
+                            <td>@(planilla.Empleado.Sector?.Nombre ?? "-")</td>
+                            <td>@(planilla.Empleado.Puesto?.Nombre ?? "-")</td>
+                            <td>@planilla.Mes/@planilla.Anio</td>
+                            <td>
+                                <span class="baykus-status-badge @GetEstadoClass(planilla.Estado)">
+                                    @planilla.Estado
+                                </span>
+                            </td>
+                            <td>@planilla.TotalHorasTrabajadas</td>
+                            <td>@(planilla.TotalHorasExtra50 + planilla.TotalHorasExtra100)</td>
+                            <td class="text-end">
+                                <a asp-page="./Details"
+                                   asp-route-id="@planilla.Id"
+                                   class="btn btn-sm btn-outline-primary">
+                                    Revisar
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    else
+    {
+        <div class="baykus-empty-state">
+            <h3>No hay planillas para mostrar</h3>
+            <p>Probá ajustando los filtros o esperando a que los empleados carguen sus planillas.</p>
+        </div>
+    }
+</div>
+
+@functions {
+    private string GetEstadoClass(EstadoPlanillaHoraria estado)
+    {
+        return estado switch
+        {
+            EstadoPlanillaHoraria.Borrador => "status-muted",
+            EstadoPlanillaHoraria.Presentada => "status-warning",
+            EstadoPlanillaHoraria.Aprobada => "status-success",
+            EstadoPlanillaHoraria.Rechazada => "status-danger",
+            EstadoPlanillaHoraria.Cerrada => "status-info",
+            _ => "status-muted"
+        };
+    }
+}

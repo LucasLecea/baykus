@@ -8,6 +8,6 @@
         Licencia = 4,
         Vacaciones = 5,
         Feriado = 6,
-        Suspencion = 7
+        Suspension = 7
     }
 }
