@@ -1,5 +1,8 @@
 using Baykus.Web.Data;
+using Baykus.Web.Security;
+using Baykus.Web.Services.Menu;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,9 +18,15 @@ builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
     options.SignIn.RequireConfirmedAccount = false;
 })
 .AddEntityFrameworkStores<ApplicationDbContext>();
+
+builder.Services.AddScoped<IMenuUsuarioService, MenuUsuarioService>();
+builder.Services.AddScoped<MenuAccessPageFilter>();
+
 builder.Services.AddRazorPages(options =>
 {
-    options.Conventions.AuthorizeFolder("/");
+    options.Conventions.ConfigureFilter(
+        new TypeFilterAttribute(typeof(MenuAccessPageFilter))
+    );
 });
 
 var app = builder.Build();

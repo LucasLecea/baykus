@@ -1,25 +1,76 @@
 ﻿@using Microsoft.AspNetCore.Identity
 @using Baykus.Web.Data
+@using Baykus.Web.Services.Menu
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
+@inject IMenuUsuarioService MenuUsuarioService
 
 @{
     var currentPath = Context.Request.Path.Value?.ToLower() ?? "";
 
-    bool IsActive(string path)
+    bool IsActive(string? path)
     {
-        return currentPath.StartsWith(path.ToLower());
+        if (string.IsNullOrWhiteSpace(path))
+        {
+            return false;
+        }
+
+        path = path.ToLower();
+
+        if (path.EndsWith("/index"))
+        {
+            path = path[..^6];
+        }
+
+        var pathActual = currentPath;
+
+        if (pathActual.EndsWith("/index"))
+        {
+            pathActual = pathActual[..^6];
+        }
+
+        return pathActual == path || pathActual.StartsWith(path + "/");
     }
 
-    var abmsActivo =
-        IsActive("/EmpleadosPages") ||
-        IsActive("/PuestoPages") ||
-        IsActive("/SectorPages");
+    string ObtenerUrlMenu(MenuUsuarioDto menu)
+    {
+        if (!string.IsNullOrWhiteSpace(menu.Page))
+        {
+            var page = menu.Page;
 
-    var gestionActivo =
-        IsActive("/OkrPages") ||
-        IsActive("/PlanillasHorarias") ||
-        IsActive("/MiPlanillaHoraria");
+            if (!page.EndsWith("/Index", StringComparison.OrdinalIgnoreCase) &&
+                page != "/Index")
+            {
+                page = page + "/Index";
+            }
+
+            return Url.Page(page, new { area = menu.Area }) ?? "#";
+        }
+
+        if (!string.IsNullOrWhiteSpace(menu.Url))
+        {
+            return menu.Url;
+        }
+
+        return "#";
+    }
+
+    string ObtenerCollapseId(MenuUsuarioDto menu)
+    {
+        return $"menu_{menu.Codigo.Replace(" ", "_").Replace("-", "_")}";
+    }
+
+    var menuUsuario = new List<MenuUsuarioDto>();
+
+    if (SignInManager.IsSignedIn(User))
+    {
+        var applicationUserId = UserManager.GetUserId(User);
+
+        if (!string.IsNullOrWhiteSpace(applicationUserId))
+        {
+            menuUsuario = await MenuUsuarioService.ObtenerMenuUsuarioAsync(applicationUserId);
+        }
+    }
 }
 
 <!DOCTYPE html>
@@ -46,97 +97,56 @@
                 </div>
 
                 <nav class="sidebar-menu">
-                    <a class="sidebar-link @(currentPath == "/" ? "active" : "")" asp-page="/Index">
-                        <span class="sidebar-icon">⌂</span>
-                        <span>Dashboard</span>
-                    </a>
-
-                    <div class="sidebar-group">
-                        <button class="sidebar-link sidebar-group-toggle @(abmsActivo ? "active" : "")"
-                                type="button"
-                                data-bs-toggle="collapse"
-                                data-bs-target="#menuAbms"
-                                aria-expanded="@(abmsActivo.ToString().ToLower())"
-                                aria-controls="menuAbms">
-                            <span class="sidebar-icon">🗂️</span>
-                            <span>ABMs</span>
-                            <span class="sidebar-chevron">⌄</span>
-                        </button>
-
-                        <div class="collapse sidebar-submenu @(abmsActivo ? "show" : "")" id="menuAbms">
-                            <a class="sidebar-sublink @(IsActive("/EmpleadosPages") ? "active" : "")"
-                               asp-page="/EmpleadosPages/Index">
-                                <span class="sidebar-dot"></span>
-                                <span>Empleados</span>
-                            </a>
-
-                            <a class="sidebar-sublink @(IsActive("/SectorPages") ? "active" : "")"
-                               asp-page="/SectorPages/Index">
-                                <span class="sidebar-dot"></span>
-                                <span>Sectores</span>
-                            </a>
-
-                            <a class="sidebar-sublink @(IsActive("/PuestoPages") ? "active" : "")"
-                               asp-page="/PuestoPages/Index">
-                                <span class="sidebar-dot"></span>
-                                <span>Puestos</span>
-                            </a>
+                    @if (!menuUsuario.Any())
+                    {
+                        <div class="px-3 py-2 text-muted small">
+                            No tenés menús asignados.
                         </div>
-                    </div>
+                    }
+                    else
+                    {
+                        foreach (var menu in menuUsuario)
+                        {
+                            var tieneHijos = menu.Hijos.Any();
+                            var menuActivo = IsActive(menu.Page) || menu.Hijos.Any(h => IsActive(h.Page));
+                            var collapseId = ObtenerCollapseId(menu);
 
-                    <div class="sidebar-group">
-                        <button class="sidebar-link sidebar-group-toggle @(gestionActivo ? "active" : "")"
-                                type="button"
-                                data-bs-toggle="collapse"
-                                data-bs-target="#menuGestion"
-                                aria-expanded="@(gestionActivo.ToString().ToLower())"
-                                aria-controls="menuGestion">
-                            <span class="sidebar-icon">📊</span>
-                            <span>Gestión</span>
-                            <span class="sidebar-chevron">⌄</span>
-                        </button>
+                            if (tieneHijos)
+                            {
+                                <div class="sidebar-group">
+                                    <button class="sidebar-link sidebar-group-toggle @(menuActivo ? "active" : "")"
+                                            type="button"
+                                            data-bs-toggle="collapse"
+                                            data-bs-target="#@collapseId"
+                                            aria-expanded="@(menuActivo.ToString().ToLower())"
+                                            aria-controls="@collapseId">
+                                        <span class="sidebar-icon">@(menu.Icono ?? "•")</span>
+                                        <span>@menu.Nombre</span>
+                                        <span class="sidebar-chevron">⌄</span>
+                                    </button>
 
-                        <div class="collapse sidebar-submenu @(gestionActivo ? "show" : "")" id="menuGestion">
-                            <a class="sidebar-sublink @(IsActive("/OkrPages/Dashboard") ? "active" : "")"
-                               asp-page="/OkrPages/Dashboard">
-                                <span class="sidebar-dot"></span>
-                                <span>Dashboard OKR</span>
-                            </a>
-
-                            <a class="sidebar-sublink @(IsActive("/OkrPages/Index")
-                                                           || IsActive("/OkrPages")
-                                                           || IsActive("/OkrPages/Create")
-                                                           || IsActive("/OkrPages/Edit")
-                                                           || IsActive("/OkrPages/Details")
-                                                           || IsActive("/OkrPages/Delete") ? "active" : "")"
-                               asp-page="/OkrPages/Index">
-                                <span class="sidebar-dot"></span>
-                                <span>Objetivos / OKR</span>
-                            </a>
-
-                            <a class="sidebar-sublink @(IsActive("/PlanillasHorarias") ? "active" : "")"
-                               asp-page="/PlanillasHorarias/Index">
-                                <span class="sidebar-dot"></span>
-                                <span>Planillas horarias</span>
-                            </a>
-
-                            <a class="sidebar-sublink @(IsActive("/MiPlanillaHoraria") ? "active" : "")"
-                               asp-page="/MiPlanillaHoraria/Index">
-                                <span class="sidebar-dot"></span>
-                                <span>Mi planilla</span>
-                            </a>
-                        </div>
-                    </div>
-
-                    <a class="sidebar-link" href="#">
-                        <span class="sidebar-icon">📁</span>
-                        <span>Documentación</span>
-                    </a>
-
-                    <a class="sidebar-link" href="#">
-                        <span class="sidebar-icon">⚙</span>
-                        <span>Configuración</span>
-                    </a>
+                                    <div class="collapse sidebar-submenu @(menuActivo ? "show" : "")" id="@collapseId">
+                                        @foreach (var hijo in menu.Hijos)
+                                        {
+                                            <a class="sidebar-sublink @(IsActive(hijo.Page) ? "active" : "")"
+                                               href="@ObtenerUrlMenu(hijo)">
+                                                <span class="sidebar-dot"></span>
+                                                <span>@hijo.Nombre</span>
+                                            </a>
+                                        }
+                                    </div>
+                                </div>
+                            }
+                            else
+                            {
+                                <a class="sidebar-link @(IsActive(menu.Page) ? "active" : "")"
+                                   href="@ObtenerUrlMenu(menu)">
+                                    <span class="sidebar-icon">@(menu.Icono ?? "•")</span>
+                                    <span>@menu.Nombre</span>
+                                </a>
+                            }
+                        }
+                    }
                 </nav>
 
                 <div class="sidebar-footer">
