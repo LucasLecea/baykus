@@ -192,6 +192,101 @@
             </div>
         </div>
 
+        <div class="baykus-form-divider"></div>
+
+        <div class="form-section-header mt-5">
+            <div>
+                <h5 class="form-section-title">Acceso al sistema</h5>
+                <p class="form-section-subtitle">
+                    Configurá si este empleado puede ingresar a Baykus y qué perfil tendrá dentro del sistema.
+                </p>
+            </div>
+        </div>
+
+        @if (!string.IsNullOrWhiteSpace(Model.MensajeOk))
+        {
+            <div class="alert alert-success rounded-4">
+                @Model.MensajeOk
+            </div>
+        }
+
+        @if (!string.IsNullOrWhiteSpace(Model.PasswordTemporal))
+        {
+            <div class="alert alert-warning rounded-4">
+                <strong>Usuario creado correctamente.</strong><br />
+                Contraseña temporal:
+                <code>@Model.PasswordTemporal</code>
+                <br />
+                Guardala ahora, porque no se volverá a mostrar.
+            </div>
+        }
+
+        <div class="row g-4">
+            <div class="col-md-6">
+                <label asp-for="PerfilSeleccionadoId" class="form-label baykus-label">
+                    Perfil de acceso
+                </label>
+
+                <select asp-for="PerfilSeleccionadoId"
+                        asp-items="Model.PerfilesSelectList"
+                        class="form-select baykus-input">
+                    <option value="">Sin perfil asignado</option>
+                </select>
+
+                <span asp-validation-for="PerfilSeleccionadoId" class="text-danger small"></span>
+
+                <p class="text-muted small mt-2 mb-0">
+                    El perfil define qué menús y acciones podrá usar el empleado.
+                </p>
+            </div>
+
+            <div class="col-md-6">
+                <div class="baykus-switch-card h-100">
+                    <div>
+                        <label class="form-label baykus-label mb-1">
+                            Usuario de acceso
+                        </label>
+
+                        @if (Model.TieneUsuarioAcceso)
+                        {
+                            <p class="text-muted mb-0 small">
+                                Este empleado ya tiene un usuario vinculado:
+                                <strong>@(Model.UsuarioAccesoEmail ?? Model.Empleado.Email)</strong>
+                            </p>
+                        }
+                        else
+                        {
+                            <p class="text-muted mb-0 small">
+                                Si activás esta opción, se creará un usuario para que pueda ingresar a Baykus.
+                            </p>
+                        }
+                    </div>
+
+                    @if (!Model.TieneUsuarioAcceso)
+                    {
+                        <div class="form-check form-switch baykus-switch">
+                            <input asp-for="CrearUsuarioAcceso"
+                                   class="form-check-input"
+                                   type="checkbox"
+                                   role="switch" />
+
+                            <label class="form-check-label" asp-for="CrearUsuarioAcceso">
+                                Crear usuario
+                            </label>
+                        </div>
+                    }
+                    else
+                    {
+                        <span class="badge rounded-pill bg-success-subtle text-success px-3 py-2">
+                            Usuario activo
+                        </span>
+                    }
+                </div>
+
+                <span asp-validation-for="CrearUsuarioAcceso" class="text-danger small"></span>
+            </div>
+        </div>
+
         <div class="baykus-form-actions mt-3">
             <a asp-page="./Index" asp-route-id="@Model.Empleado.Id" class="btn btn-outline-secondary btn-baykus-secondary">
                 Cancelar

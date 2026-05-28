@@ -23,5 +23,25 @@ namespace Baykus.Web.Data
         public DbSet<PlanillaHorariaDetalle> PlanillasHorariasDetalles { get; set; }
         public DbSet<PlanillaHorariaHistorial> PlanillasHorariasHistorial { get; set; }
         public DbSet<Feriado> Feriados { get; set; }
+        public DbSet<Perfil> Perfiles { get; set; }
+        public DbSet<EmpleadoPerfil> EmpleadoPerfiles { get; set; }
+        public DbSet<MenuSistema> MenusSistema { get; set; }
+        public DbSet<PerfilMenuPermiso> PerfilMenuPermisos { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            base.OnModelCreating(builder);
+
+            builder.Entity<Empleado>()
+                .HasOne(e => e.ApplicationUser)
+                .WithOne(u => u.Empleado)
+                .HasForeignKey<Empleado>(e => e.ApplicationUserId)
+                .OnDelete(DeleteBehavior.SetNull);
+
+            builder.Entity<Empleado>()
+                .HasIndex(e => e.ApplicationUserId)
+                .IsUnique()
+                .HasFilter("[ApplicationUserId] IS NOT NULL");
+        }
     }
 }

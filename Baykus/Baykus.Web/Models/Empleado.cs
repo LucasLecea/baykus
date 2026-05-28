@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Baykus.Web.Data;
+using System.ComponentModel.DataAnnotations;
 
 namespace Baykus.Web.Models
 {
@@ -53,5 +54,10 @@ namespace Baykus.Web.Models
 
         public ICollection<PlanillaHoraria> PlanillasHorarias { get; set; } = new List<PlanillaHoraria>();
         public ICollection<EmpleadoHistorialLaboral> HistorialLaboral { get; set; } = new List<EmpleadoHistorialLaboral>();
+        public ICollection<EmpleadoPerfil> EmpleadoPerfiles { get; set; } = new List<EmpleadoPerfil>();
+
+        public string? ApplicationUserId { get; set; }
+
+        public ApplicationUser? ApplicationUser { get; set; }
     }
 }

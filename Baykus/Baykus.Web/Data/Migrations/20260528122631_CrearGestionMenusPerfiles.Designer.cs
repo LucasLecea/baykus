@@ -4,6 +4,7 @@ using Baykus.Web.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Baykus.Web.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260528122631_CrearGestionMenusPerfiles")]
+    partial class CrearGestionMenusPerfiles
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -103,9 +106,6 @@ namespace Baykus.Web.Data.Migrations
                         .HasMaxLength(150)
                         .HasColumnType("nvarchar(150)");
 
-                    b.Property<string>("ApplicationUserId")
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<string>("Cuil")
                         .HasColumnType("nvarchar(max)");
 
@@ -154,10 +154,6 @@ namespace Baykus.Web.Data.Migrations
                         .HasColumnType("nvarchar(100)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ApplicationUserId")
-                        .IsUnique()
-                        .HasFilter("[ApplicationUserId] IS NOT NULL");
 
                     b.HasIndex("JornadaLaboralId");
 
@@ -959,11 +955,6 @@ namespace Baykus.Web.Data.Migrations
 
             modelBuilder.Entity("Baykus.Web.Models.Empleado", b =>
                 {
-                    b.HasOne("Baykus.Web.Data.ApplicationUser", "ApplicationUser")
-                        .WithOne("Empleado")
-                        .HasForeignKey("Baykus.Web.Models.Empleado", "ApplicationUserId")
-                        .OnDelete(DeleteBehavior.SetNull);
-
                     b.HasOne("Baykus.Web.Models.JornadaLaboral", "JornadaLaboral")
                         .WithMany("Empleados")
                         .HasForeignKey("JornadaLaboralId");
@@ -975,8 +966,6 @@ namespace Baykus.Web.Data.Migrations
                     b.HasOne("Baykus.Web.Models.Sector", "Sector")
                         .WithMany()
                         .HasForeignKey("SectorId");
-
-                    b.Navigation("ApplicationUser");
 
                     b.Navigation("JornadaLaboral");
 
@@ -1199,11 +1188,6 @@ namespace Baykus.Web.Data.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("Baykus.Web.Data.ApplicationUser", b =>
-                {
-                    b.Navigation("Empleado");
                 });
 
             modelBuilder.Entity("Baykus.Web.Models.Empleado", b =>

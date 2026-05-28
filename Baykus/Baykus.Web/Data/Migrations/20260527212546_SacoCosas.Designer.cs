@@ -4,6 +4,7 @@ using Baykus.Web.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Baykus.Web.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260527212546_SacoCosas")]
+    partial class SacoCosas
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -103,9 +106,6 @@ namespace Baykus.Web.Data.Migrations
                         .HasMaxLength(150)
                         .HasColumnType("nvarchar(150)");
 
-                    b.Property<string>("ApplicationUserId")
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<string>("Cuil")
                         .HasColumnType("nvarchar(max)");
 
@@ -154,10 +154,6 @@ namespace Baykus.Web.Data.Migrations
                         .HasColumnType("nvarchar(100)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ApplicationUserId")
-                        .IsUnique()
-                        .HasFilter("[ApplicationUserId] IS NOT NULL");
 
                     b.HasIndex("JornadaLaboralId");
 
@@ -211,35 +207,6 @@ namespace Baykus.Web.Data.Migrations
                     b.HasIndex("SectorId");
 
                     b.ToTable("EmpleadosHistorialLaboral");
-                });
-
-            modelBuilder.Entity("Baykus.Web.Models.EmpleadoPerfil", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<bool>("Activo")
-                        .HasColumnType("bit");
-
-                    b.Property<int>("EmpleadoId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("FechaAsignacion")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("PerfilId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("EmpleadoId");
-
-                    b.HasIndex("PerfilId");
-
-                    b.ToTable("EmpleadoPerfiles");
                 });
 
             modelBuilder.Entity("Baykus.Web.Models.Feriado", b =>
@@ -312,66 +279,6 @@ namespace Baykus.Web.Data.Migrations
                     b.ToTable("JornadasLaborales");
                 });
 
-            modelBuilder.Entity("Baykus.Web.Models.MenuSistema", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<bool>("Activo")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Area")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<string>("Codigo")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<string>("Descripcion")
-                        .HasMaxLength(300)
-                        .HasColumnType("nvarchar(300)");
-
-                    b.Property<bool>("EsVisible")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime>("FechaCreacion")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Icono")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<int?>("MenuPadreId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Nombre")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<int>("Orden")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Page")
-                        .HasMaxLength(300)
-                        .HasColumnType("nvarchar(300)");
-
-                    b.Property<string>("Url")
-                        .HasMaxLength(300)
-                        .HasColumnType("nvarchar(300)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("MenuPadreId");
-
-                    b.ToTable("MenusSistema");
-                });
-
             modelBuilder.Entity("Baykus.Web.Models.ObjetivoOkr", b =>
                 {
                     b.Property<int>("Id")
@@ -427,81 +334,6 @@ namespace Baykus.Web.Data.Migrations
                     b.HasIndex("SectorId");
 
                     b.ToTable("ObjetivosOkr");
-                });
-
-            modelBuilder.Entity("Baykus.Web.Models.Perfil", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<bool>("Activo")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Descripcion")
-                        .HasMaxLength(300)
-                        .HasColumnType("nvarchar(300)");
-
-                    b.Property<bool>("EsAdministrador")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime>("FechaCreacion")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Nombre")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Perfiles");
-                });
-
-            modelBuilder.Entity("Baykus.Web.Models.PerfilMenuPermiso", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("FechaAsignacion")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("MenuSistemaId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("PerfilId")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("PuedeAprobar")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("PuedeCrear")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("PuedeEditar")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("PuedeEliminar")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("PuedeRevisar")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("PuedeVer")
-                        .HasColumnType("bit");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("MenuSistemaId");
-
-                    b.HasIndex("PerfilId");
-
-                    b.ToTable("PerfilMenuPermisos");
                 });
 
             modelBuilder.Entity("Baykus.Web.Models.PlanillaHoraria", b =>
@@ -959,11 +791,6 @@ namespace Baykus.Web.Data.Migrations
 
             modelBuilder.Entity("Baykus.Web.Models.Empleado", b =>
                 {
-                    b.HasOne("Baykus.Web.Data.ApplicationUser", "ApplicationUser")
-                        .WithOne("Empleado")
-                        .HasForeignKey("Baykus.Web.Models.Empleado", "ApplicationUserId")
-                        .OnDelete(DeleteBehavior.SetNull);
-
                     b.HasOne("Baykus.Web.Models.JornadaLaboral", "JornadaLaboral")
                         .WithMany("Empleados")
                         .HasForeignKey("JornadaLaboralId");
@@ -975,8 +802,6 @@ namespace Baykus.Web.Data.Migrations
                     b.HasOne("Baykus.Web.Models.Sector", "Sector")
                         .WithMany()
                         .HasForeignKey("SectorId");
-
-                    b.Navigation("ApplicationUser");
 
                     b.Navigation("JornadaLaboral");
 
@@ -1014,34 +839,6 @@ namespace Baykus.Web.Data.Migrations
                     b.Navigation("Sector");
                 });
 
-            modelBuilder.Entity("Baykus.Web.Models.EmpleadoPerfil", b =>
-                {
-                    b.HasOne("Baykus.Web.Models.Empleado", "Empleado")
-                        .WithMany("EmpleadoPerfiles")
-                        .HasForeignKey("EmpleadoId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Baykus.Web.Models.Perfil", "Perfil")
-                        .WithMany("EmpleadoPerfiles")
-                        .HasForeignKey("PerfilId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Empleado");
-
-                    b.Navigation("Perfil");
-                });
-
-            modelBuilder.Entity("Baykus.Web.Models.MenuSistema", b =>
-                {
-                    b.HasOne("Baykus.Web.Models.MenuSistema", "MenuPadre")
-                        .WithMany("SubMenus")
-                        .HasForeignKey("MenuPadreId");
-
-                    b.Navigation("MenuPadre");
-                });
-
             modelBuilder.Entity("Baykus.Web.Models.ObjetivoOkr", b =>
                 {
                     b.HasOne("Baykus.Web.Models.Empleado", "EmpleadoResponsable")
@@ -1065,25 +862,6 @@ namespace Baykus.Web.Data.Migrations
                     b.Navigation("Puesto");
 
                     b.Navigation("Sector");
-                });
-
-            modelBuilder.Entity("Baykus.Web.Models.PerfilMenuPermiso", b =>
-                {
-                    b.HasOne("Baykus.Web.Models.MenuSistema", "MenuSistema")
-                        .WithMany("PerfilPermisos")
-                        .HasForeignKey("MenuSistemaId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Baykus.Web.Models.Perfil", "Perfil")
-                        .WithMany("MenuPermisos")
-                        .HasForeignKey("PerfilId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("MenuSistema");
-
-                    b.Navigation("Perfil");
                 });
 
             modelBuilder.Entity("Baykus.Web.Models.PlanillaHoraria", b =>
@@ -1201,15 +979,8 @@ namespace Baykus.Web.Data.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Baykus.Web.Data.ApplicationUser", b =>
-                {
-                    b.Navigation("Empleado");
-                });
-
             modelBuilder.Entity("Baykus.Web.Models.Empleado", b =>
                 {
-                    b.Navigation("EmpleadoPerfiles");
-
                     b.Navigation("HistorialLaboral");
 
                     b.Navigation("PlanillasHorarias");
@@ -1220,25 +991,11 @@ namespace Baykus.Web.Data.Migrations
                     b.Navigation("Empleados");
                 });
 
-            modelBuilder.Entity("Baykus.Web.Models.MenuSistema", b =>
-                {
-                    b.Navigation("PerfilPermisos");
-
-                    b.Navigation("SubMenus");
-                });
-
             modelBuilder.Entity("Baykus.Web.Models.ObjetivoOkr", b =>
                 {
                     b.Navigation("ResultadosClave");
 
                     b.Navigation("Seguimientos");
-                });
-
-            modelBuilder.Entity("Baykus.Web.Models.Perfil", b =>
-                {
-                    b.Navigation("EmpleadoPerfiles");
-
-                    b.Navigation("MenuPermisos");
                 });
 
             modelBuilder.Entity("Baykus.Web.Models.PlanillaHoraria", b =>
