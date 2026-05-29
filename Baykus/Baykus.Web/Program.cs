@@ -1,6 +1,7 @@
 using Baykus.Web.Data;
 using Baykus.Web.Security;
 using Baykus.Web.Services.Menu;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -18,6 +19,13 @@ builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
     options.SignIn.RequireConfirmedAccount = false;
 })
 .AddEntityFrameworkStores<ApplicationDbContext>();
+
+builder.Services.AddAuthorization(options =>
+{
+    options.FallbackPolicy = new AuthorizationPolicyBuilder()
+        .RequireAuthenticatedUser()
+        .Build();
+});
 
 builder.Services.AddScoped<IMenuUsuarioService, MenuUsuarioService>();
 builder.Services.AddScoped<MenuAccessPageFilter>();
@@ -50,7 +58,9 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapStaticAssets();
+app.MapStaticAssets()
+   .AllowAnonymous();
+
 app.MapRazorPages()
    .WithStaticAssets();
 
