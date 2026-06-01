@@ -109,10 +109,44 @@ body {
     border-top: 1px solid rgba(255,255,255,.08);
 }
 
-.baykus-main {
-    flex: 1;
-    margin-left: 270px;
+/* =========================================================
+   Layout principal - fix ancho baykus-main
+   ========================================================= */
+
+.baykus-app {
     min-height: 100vh;
+    width: 100%;
+    overflow-x: hidden;
+}
+
+.baykus-sidebar {
+    width: 270px;
+    min-height: 100vh;
+    position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    z-index: 1000;
+}
+
+.baykus-main {
+    min-height: 100vh;
+    margin-left: 270px;
+    width: calc(100% - 270px);
+    max-width: calc(100% - 270px);
+    min-width: 0;
+    overflow-x: hidden;
+}
+
+.baykus-topbar,
+.baykus-content {
+    min-width: 0;
+    max-width: 100%;
+}
+
+.baykus-content {
+    width: 100%;
+    overflow-x: hidden;
 }
 
 .baykus-topbar {
@@ -212,6 +246,8 @@ body {
 
     .baykus-main {
         margin-left: 230px;
+        width: calc(100% - 230px);
+        max-width: calc(100% - 230px);
     }
 }
 
@@ -240,9 +276,18 @@ body {
         display: none;
     }
 
+
     .baykus-main {
         margin-left: 0;
+        width: 100%;
+        max-width: 100%;
+        min-height: 100vh;
     }
+
+    .baykus-content {
+        padding: 20px;
+    }
+
 
     .baykus-topbar {
         flex-direction: column;
@@ -257,10 +302,6 @@ body {
 
     .user-info {
         text-align: left;
-    }
-
-    .baykus-content {
-        padding: 18px;
     }
 }
 .sidebar-logo {
@@ -1684,3 +1725,1050 @@ a {
     border-radius: 1.25rem;
     border: none;
 }
+
+/* =========================================================
+   Baykus Theme System
+   Light / Dark
+   ========================================================= */
+
+:root {
+    color-scheme: light;
+    --baykus-bg: #f3f7f6;
+    --baykus-surface: #ffffff;
+    --baykus-surface-soft: #f8fbfa;
+    --baykus-sidebar: #062f2d;
+    --baykus-sidebar-hover: #0b4541;
+    --baykus-sidebar-active: #0f766e;
+    --baykus-topbar: #ffffff;
+    --baykus-primary: #0f766e;
+    --baykus-primary-dark: #0b4f4a;
+    --baykus-primary-soft: #d7f3ef;
+    --baykus-accent: #2f9b91;
+    --baykus-text: #10201f;
+    --baykus-heading: #111827;
+    --baykus-muted: #667c79;
+    --baykus-border: #d8e6e3;
+    --baykus-card: #ffffff;
+    --baykus-input-bg: #ffffff;
+    --baykus-input-text: #1f2937;
+    --baykus-input-border: #dbe3ef;
+    --baykus-table-head: #6b7280;
+    --baykus-table-text: #374151;
+    --baykus-table-border: #e5e7eb;
+    --baykus-row-soft: #f8fafc;
+    --baykus-shadow-card: 0 8px 24px rgba(15, 23, 42, 0.04);
+    --baykus-shadow-elevated: 0 12px 35px rgba(15, 23, 42, 0.08);
+    --baykus-focus-ring: rgba(15, 118, 110, 0.22);
+}
+
+    :root[data-theme="dark"] {
+        color-scheme: dark;
+        --baykus-bg: #071816;
+        --baykus-surface: #0d2421;
+        --baykus-surface-soft: #102d29;
+        --baykus-sidebar: #031f1e;
+        --baykus-sidebar-hover: #0b3a36;
+        --baykus-sidebar-active: #0f766e;
+        --baykus-topbar: #0b201e;
+        --baykus-primary: #2dd4bf;
+        --baykus-primary-dark: #5eead4;
+        --baykus-primary-soft: rgba(45, 212, 191, 0.14);
+        --baykus-accent: #14b8a6;
+        --baykus-text: #e5f4f1;
+        --baykus-heading: #f8fffd;
+        --baykus-muted: #9bb8b3;
+        --baykus-border: rgba(148, 211, 203, 0.18);
+        --baykus-card: #0d2421;
+        --baykus-input-bg: #081c1a;
+        --baykus-input-text: #e5f4f1;
+        --baykus-input-border: rgba(148, 211, 203, 0.24);
+        --baykus-table-head: #a8c7c2;
+        --baykus-table-text: #d8ece8;
+        --baykus-table-border: rgba(148, 211, 203, 0.18);
+        --baykus-row-soft: #102d29;
+        --baykus-shadow-card: 0 14px 34px rgba(0, 0, 0, 0.22);
+        --baykus-shadow-elevated: 0 22px 55px rgba(0, 0, 0, 0.32);
+        --baykus-focus-ring: rgba(45, 212, 191, 0.28);
+    }
+
+/* Base */
+
+body {
+    background: var(--baykus-bg);
+    color: var(--baykus-text);
+}
+
+a {
+    color: var(--baykus-primary);
+}
+
+    a:hover {
+        color: var(--baykus-primary-dark);
+    }
+
+.text-muted {
+    color: var(--baykus-muted) !important;
+}
+
+/* Layout principal */
+
+.baykus-sidebar {
+    background: var(--baykus-sidebar);
+}
+
+.baykus-topbar {
+    background: var(--baykus-topbar);
+    border-bottom-color: var(--baykus-border);
+}
+
+.baykus-content {
+    background: var(--baykus-bg);
+}
+
+.page-title,
+.baykus-card-title,
+.employee-profile-name,
+.form-section-title,
+.empty-state h3,
+.okr-stat-value,
+.okr-list-title,
+.estado-title {
+    color: var(--baykus-heading);
+}
+
+.page-subtitle,
+.baykus-card-text,
+.user-role,
+.employee-profile-subtitle,
+.form-section-subtitle,
+.empty-state p,
+.okr-stat-label,
+.okr-list-subtitle,
+.okr-list-meta,
+.estado-subtitle,
+.descripcion-cell,
+.okr-timeline-date,
+.baykus-empty-state {
+    color: var(--baykus-muted);
+}
+
+/* Sidebar */
+
+.sidebar-brand {
+    border-bottom-color: rgba(255, 255, 255, 0.10);
+}
+
+.sidebar-footer {
+    border-top-color: rgba(255, 255, 255, 0.10);
+}
+
+.sidebar-link {
+    color: rgba(255, 255, 255, 0.78);
+}
+
+    .sidebar-link:hover,
+    .sidebar-group-toggle:hover {
+        color: #ffffff;
+        background: var(--baykus-sidebar-hover);
+    }
+
+    .sidebar-link.active {
+        color: #ffffff;
+        background: var(--baykus-sidebar-hover);
+    }
+
+.sidebar-submenu {
+    border-left-color: rgba(255, 255, 255, 0.14);
+}
+
+.sidebar-sublink {
+    color: rgba(255, 255, 255, 0.72);
+}
+
+    .sidebar-sublink:hover,
+    .sidebar-sublink.active {
+        color: #ffffff;
+        background: rgba(255, 255, 255, 0.08);
+    }
+
+/* Topbar usuario y botones */
+
+.topbar-user {
+    background: var(--baykus-surface-soft);
+    border-color: var(--baykus-border);
+}
+
+.user-name {
+    color: var(--baykus-heading);
+}
+
+.btn-baykus-theme,
+.btn-baykus-logout,
+.btn-volver,
+.btn-secondary,
+.btn-outline-secondary {
+    min-height: 38px;
+    border-radius: 999px;
+    border: 1px solid var(--baykus-border);
+    background: var(--baykus-surface);
+    color: var(--baykus-primary-dark);
+    font-size: .88rem;
+    font-weight: 700;
+    padding: 0 14px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    box-shadow: 0 6px 14px rgba(15, 23, 42, .05);
+    transition: all .18s ease;
+}
+
+    .btn-baykus-theme:hover,
+    .btn-baykus-logout:hover,
+    .btn-volver:hover,
+    .btn-secondary:hover,
+    .btn-outline-secondary:hover {
+        background: var(--baykus-primary-soft);
+        border-color: var(--baykus-primary);
+        color: var(--baykus-primary-dark);
+        transform: translateY(-1px);
+    }
+
+.theme-toggle-icon {
+    line-height: 1;
+}
+
+/* Cards, secciones y superficies */
+
+.baykus-card,
+.form-card,
+.auth-card,
+.baykus-stat,
+.okr-stat-card,
+.baykus-kpi-card,
+.detail-section,
+.delete-summary-item,
+.baykus-note-box {
+    background: var(--baykus-card);
+    border-color: var(--baykus-border);
+    color: var(--baykus-text);
+    box-shadow: var(--baykus-shadow-card);
+}
+
+.detail-section,
+.estado-box,
+.okr-list-item {
+    background: var(--baykus-surface-soft);
+    border-color: var(--baykus-border);
+}
+
+.detail-item,
+.form-actions,
+.auth-divider {
+    border-color: var(--baykus-border);
+}
+
+.detail-label {
+    color: var(--baykus-muted);
+}
+
+.detail-value {
+    color: var(--baykus-text);
+}
+
+/* Formularios */
+
+.form-label,
+.auth-form .form-label {
+    color: var(--baykus-heading);
+}
+
+.form-control,
+.form-select,
+.baykus-input,
+.auth-form .form-control,
+input,
+select,
+textarea {
+    background-color: var(--baykus-input-bg);
+    color: var(--baykus-input-text);
+    border-color: var(--baykus-input-border);
+}
+
+    .form-control:focus,
+    .form-select:focus,
+    .baykus-input:focus,
+    .auth-form .form-control:focus,
+    input:focus,
+    select:focus,
+    textarea:focus {
+        background-color: var(--baykus-input-bg);
+        color: var(--baykus-input-text);
+        border-color: var(--baykus-primary);
+        box-shadow: 0 0 0 .2rem var(--baykus-focus-ring);
+    }
+
+    .form-control::placeholder,
+    .baykus-input::placeholder,
+    textarea::placeholder {
+        color: var(--baykus-muted);
+        opacity: .8;
+    }
+
+.form-check-input {
+    background-color: var(--baykus-input-bg);
+    border-color: var(--baykus-input-border);
+}
+
+    .form-check-input:checked {
+        background-color: var(--baykus-primary);
+        border-color: var(--baykus-primary);
+    }
+
+/* Tablas */
+
+.table,
+.baykus-table {
+    color: var(--baykus-table-text);
+    border-color: var(--baykus-table-border);
+}
+
+    .baykus-table thead th,
+    .table thead th {
+        color: var(--baykus-table-head);
+        border-bottom-color: var(--baykus-table-border);
+    }
+
+    .baykus-table tbody td,
+    .table tbody td {
+        color: var(--baykus-table-text);
+        border-color: var(--baykus-table-border);
+    }
+
+.table-striped > tbody > tr:nth-of-type(odd) > * {
+    color: var(--baykus-table-text);
+    background-color: var(--baykus-row-soft);
+}
+
+.table-hover > tbody > tr:hover > * {
+    color: var(--baykus-table-text);
+    background-color: var(--baykus-primary-soft);
+}
+
+/* Dropdowns / collapse / menú Bootstrap */
+
+.dropdown-menu {
+    background: var(--baykus-surface);
+    border-color: var(--baykus-border);
+    box-shadow: var(--baykus-shadow-elevated);
+}
+
+.dropdown-item {
+    color: var(--baykus-text);
+}
+
+    .dropdown-item:hover,
+    .dropdown-item:focus {
+        color: var(--baykus-heading);
+        background: var(--baykus-primary-soft);
+    }
+
+.collapse {
+    color: inherit;
+}
+
+/* Botones Bootstrap principales */
+
+.btn-primary {
+    background-color: var(--baykus-primary);
+    border-color: var(--baykus-primary);
+    color: #ffffff;
+}
+
+    .btn-primary:hover {
+        background-color: var(--baykus-primary-dark);
+        border-color: var(--baykus-primary-dark);
+        color: #ffffff;
+    }
+
+.btn-outline-primary {
+    color: var(--baykus-primary);
+    border-color: var(--baykus-primary);
+}
+
+    .btn-outline-primary:hover {
+        background-color: var(--baykus-primary);
+        border-color: var(--baykus-primary);
+        color: #ffffff;
+    }
+
+/* Badges existentes */
+
+.baykus-badge-success,
+.badge-activo {
+    background: var(--baykus-primary-soft);
+    color: var(--baykus-primary-dark);
+    border-color: rgba(45, 212, 191, 0.28);
+}
+
+.baykus-badge-muted,
+.badge-inactivo {
+    background: var(--baykus-surface-soft);
+    color: var(--baykus-muted);
+    border-color: var(--baykus-border);
+}
+
+/* OKR / componentes auxiliares */
+
+.okr-timeline-text {
+    color: var(--baykus-text);
+}
+
+.okr-progress-circle {
+    background: radial-gradient(circle at center, var(--baykus-card) 58%, transparent 59%), conic-gradient(var(--baykus-primary) var(--progress, 0%), var(--baykus-border) 0);
+}
+
+.okr-progress-circle-inner {
+    background: var(--baykus-card);
+    box-shadow: inset 0 0 0 1px var(--baykus-border);
+}
+
+.okr-stat-icon {
+    background: var(--baykus-surface-soft);
+}
+
+.okr-list-item:hover {
+    border-color: var(--baykus-primary);
+    background: var(--baykus-primary-soft);
+}
+
+/* Auth/Login: no rompe Identity; solo respeta variables si el tema está oscuro */
+
+:root[data-theme="dark"] .auth-public-layout,
+:root[data-theme="dark"] .auth-shell {
+    background: radial-gradient(circle at top left, rgba(45, 212, 191, .12) 0, transparent 34%), linear-gradient(135deg, #071816 0%, #0b201e 100%);
+}
+
+:root[data-theme="dark"] .auth-left {
+    background: radial-gradient(circle at top left, rgba(45, 212, 191, .22), transparent 34%), linear-gradient(160deg, #031f1e 0%, #0b3a36 55%, #0f766e 100%);
+}
+
+:root[data-theme="dark"] .auth-card {
+    background: var(--baykus-card);
+    border-color: var(--baykus-border);
+}
+
+:root[data-theme="dark"] .validation-summary-errors {
+    background: rgba(127, 29, 29, 0.22);
+    color: #fecaca;
+    border-color: rgba(248, 113, 113, 0.32);
+}
+
+:root[data-theme="dark"] .field-validation-error {
+    color: #fca5a5;
+}
+
+/* Ajustes móviles */
+
+@media (max-width: 768px) {
+    .topbar-user {
+        flex-wrap: wrap;
+        justify-content: flex-end;
+        border-radius: 18px;
+    }
+
+    .btn-baykus-theme .theme-toggle-text {
+        display: none;
+    }
+}
+/* =========================================================
+   Fix hover tabla en modo oscuro
+   Evita que Bootstrap pinte filas demasiado claras
+   ========================================================= */
+
+:root[data-theme="dark"] .baykus-table {
+    --bs-table-bg: transparent;
+    --bs-table-color: #dcefeb;
+    --bs-table-border-color: rgba(148, 211, 203, 0.18);
+    --bs-table-hover-bg: rgba(45, 212, 191, 0.075);
+    --bs-table-hover-color: #f6fffd;
+    --bs-table-striped-bg: rgba(255, 255, 255, 0.025);
+    --bs-table-striped-color: #dcefeb;
+    --bs-table-accent-bg: transparent;
+}
+
+    :root[data-theme="dark"] .baykus-table tbody tr:hover,
+    :root[data-theme="dark"] .baykus-table tbody tr:hover > *,
+    :root[data-theme="dark"] .table-hover.baykus-table > tbody > tr:hover > *,
+    :root[data-theme="dark"] .baykus-table.table-hover > tbody > tr:hover > * {
+        background-color: rgba(45, 212, 191, 0.075) !important;
+        color: #f6fffd !important;
+        box-shadow: none !important;
+    }
+
+        :root[data-theme="dark"] .baykus-table tbody tr:hover td {
+            border-color: rgba(45, 212, 191, 0.18);
+        }
+
+        :root[data-theme="dark"] .baykus-table tbody tr:hover .puesto-nombre {
+            color: #ffffff !important;
+        }
+
+        :root[data-theme="dark"] .baykus-table tbody tr:hover .text-muted,
+        :root[data-theme="dark"] .baykus-table tbody tr:hover .descripcion-cell,
+        :root[data-theme="dark"] .baykus-table tbody tr:hover .descripcion-cell span {
+            color: #bfe7e1 !important;
+        }
+
+        :root[data-theme="dark"] .baykus-table tbody tr:hover .baykus-badge-soft {
+            background: rgba(45, 212, 191, 0.10);
+            color: #eafffb;
+            border-color: rgba(45, 212, 191, 0.28);
+        }
+
+        :root[data-theme="dark"] .baykus-table tbody tr:hover .badge-activo {
+            background: rgba(45, 212, 191, 0.20);
+            color: #7fffee;
+            border-color: rgba(45, 212, 191, 0.45);
+        }
+
+.baykus-table thead th {
+    background: var(--baykus-surface-soft);
+    color: var(--baykus-table-head);
+    border-bottom: 1px solid var(--baykus-table-border);
+    font-size: 0.76rem;
+    text-transform: uppercase;
+    letter-spacing: 0.045em;
+    font-weight: 900;
+    padding: 1rem 1.25rem;
+    white-space: nowrap;
+}
+
+.puesto-nombre {
+    color: var(--baykus-heading);
+    font-weight: 850;
+    line-height: 1.35;
+}
+/* =========================================================
+   Fix selects deshabilitados en modo oscuro
+   Ejemplo: Crear empleado -> Puesto sin sector seleccionado
+   ========================================================= */
+
+.form-select.baykus-input:disabled,
+.form-control.baykus-input:disabled,
+.baykus-input:disabled {
+    background-color: var(--baykus-surface-soft);
+    color: var(--baykus-muted);
+    border-color: var(--baykus-border);
+    opacity: 1;
+    cursor: not-allowed;
+}
+
+:root[data-theme="dark"] .form-select.baykus-input:disabled,
+:root[data-theme="dark"] .form-control.baykus-input:disabled,
+:root[data-theme="dark"] .baykus-input:disabled {
+    background-color: #0a211f;
+    color: #7fa39d;
+    border-color: rgba(148, 211, 203, 0.22);
+    opacity: 1;
+    cursor: not-allowed;
+}
+
+/* Flecha del select en modo oscuro */
+:root[data-theme="dark"] .form-select.baykus-input {
+    background-color: var(--baykus-input-bg);
+    color: var(--baykus-input-text);
+    border-color: var(--baykus-input-border);
+}
+
+    /* Flecha del select deshabilitado en modo oscuro */
+    :root[data-theme="dark"] .form-select.baykus-input:disabled {
+        background-color: #0a211f;
+        color: #7fa39d;
+        border-color: rgba(148, 211, 203, 0.22);
+    }
+
+    /* Placeholder/opción inicial más legible */
+    :root[data-theme="dark"] .form-select.baykus-input option {
+        background-color: #0d2421;
+        color: #e5f4f1;
+    }
+
+        :root[data-theme="dark"] .form-select.baykus-input option:disabled {
+            color: #7fa39d;
+        }
+/* =========================================================
+   Delete empleado - warning box dark mode
+   ========================================================= */
+
+.delete-warning-box {
+    background: #fff7ed;
+    border: 1px solid #fed7aa;
+    color: #7c2d12;
+}
+
+.delete-warning-title {
+    color: #7c2d12;
+}
+
+.delete-warning-text {
+    color: #9a3412;
+}
+
+:root[data-theme="dark"] .delete-warning-box {
+    background: linear-gradient( 135deg, rgba(127, 29, 29, 0.22), rgba(120, 53, 15, 0.16) );
+    border-color: rgba(251, 146, 60, 0.28);
+    color: #fed7aa;
+    box-shadow: 0 16px 34px rgba(0, 0, 0, 0.18);
+}
+
+:root[data-theme="dark"] .delete-warning-title {
+    color: #ffedd5;
+}
+
+:root[data-theme="dark"] .delete-warning-text {
+    color: #fdba74;
+}
+
+:root[data-theme="dark"] .delete-warning-icon {
+    background: linear-gradient( 135deg, #f97316, #dc2626 );
+    color: #ffffff;
+    box-shadow: 0 12px 24px rgba(220, 38, 38, 0.28);
+}
+
+/* =========================================================
+   Planillas Horarias Details - Dark mode polish
+   ========================================================= */
+
+/* Header de página */
+
+.baykus-page-header h1 {
+    color: var(--baykus-heading);
+    font-weight: 900;
+    margin-bottom: 0.35rem;
+}
+
+.baykus-page-header p {
+    color: var(--baykus-muted);
+    margin-bottom: 0;
+}
+
+:root[data-theme="dark"] .baykus-page-header h1 {
+    color: #f6fffd;
+}
+
+:root[data-theme="dark"] .baykus-page-header p {
+    color: #9fc8c2;
+}
+
+/* Card principal de resumen */
+
+.baykus-card h2,
+.baykus-card h3,
+.baykus-card .fw-semibold,
+.baykus-card strong {
+    color: var(--baykus-heading);
+}
+
+.baykus-card hr {
+    border-color: var(--baykus-border);
+    opacity: 1;
+}
+
+:root[data-theme="dark"] .baykus-card h2,
+:root[data-theme="dark"] .baykus-card h3,
+:root[data-theme="dark"] .baykus-card .fw-semibold,
+:root[data-theme="dark"] .baykus-card strong {
+    color: #f6fffd;
+}
+
+:root[data-theme="dark"] .baykus-card hr {
+    border-color: rgba(148, 211, 203, 0.20);
+}
+
+/* KPI cards */
+
+.baykus-kpi-card {
+    background: var(--baykus-card);
+    border: 1px solid var(--baykus-border);
+    border-radius: 1.25rem;
+    padding: 1rem;
+    box-shadow: var(--baykus-shadow-card);
+}
+
+    .baykus-kpi-card span {
+        display: block;
+        color: var(--baykus-muted);
+        font-size: 0.82rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .baykus-kpi-card strong {
+        display: block;
+        color: var(--baykus-heading);
+        font-size: 1.35rem;
+        font-weight: 900;
+        line-height: 1;
+    }
+
+:root[data-theme="dark"] .baykus-kpi-card {
+    background: linear-gradient( 135deg, rgba(13, 36, 33, 0.98), rgba(16, 45, 41, 0.92) );
+    border-color: rgba(148, 211, 203, 0.18);
+    box-shadow: 0 14px 32px rgba(0, 0, 0, 0.20);
+}
+
+    :root[data-theme="dark"] .baykus-kpi-card span {
+        color: #9fc8c2;
+    }
+
+    :root[data-theme="dark"] .baykus-kpi-card strong {
+        color: #5eead4;
+    }
+
+/* Status badges de planilla */
+
+.baykus-status-badge {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 999px;
+    padding: 0.42rem 0.75rem;
+    font-size: 0.78rem;
+    font-weight: 850;
+    line-height: 1;
+    border: 1px solid transparent;
+}
+
+/* Light */
+.status-muted {
+    background: #eef2f1;
+    color: #475569;
+    border-color: #d8e6e3;
+}
+
+.status-warning {
+    background: #fef3c7;
+    color: #92400e;
+    border-color: #fde68a;
+}
+
+.status-success {
+    background: #dcfce7;
+    color: #166534;
+    border-color: #bbf7d0;
+}
+
+.status-danger {
+    background: #fee2e2;
+    color: #991b1b;
+    border-color: #fecaca;
+}
+
+.status-info {
+    background: #e0f2fe;
+    color: #0369a1;
+    border-color: #bae6fd;
+}
+
+/* Dark */
+:root[data-theme="dark"] .status-muted {
+    background: rgba(148, 163, 184, 0.12);
+    color: #cbd5e1;
+    border-color: rgba(148, 163, 184, 0.26);
+}
+
+:root[data-theme="dark"] .status-warning {
+    background: rgba(245, 158, 11, 0.16);
+    color: #fbbf24;
+    border-color: rgba(245, 158, 11, 0.34);
+}
+
+:root[data-theme="dark"] .status-success {
+    background: rgba(34, 197, 94, 0.14);
+    color: #86efac;
+    border-color: rgba(34, 197, 94, 0.30);
+}
+
+:root[data-theme="dark"] .status-danger {
+    background: rgba(239, 68, 68, 0.15);
+    color: #fca5a5;
+    border-color: rgba(239, 68, 68, 0.32);
+}
+
+:root[data-theme="dark"] .status-info {
+    background: rgba(14, 165, 233, 0.15);
+    color: #7dd3fc;
+    border-color: rgba(14, 165, 233, 0.32);
+}
+
+/* Tabla detalle diario */
+
+:root[data-theme="dark"] .baykus-table {
+    --bs-table-bg: transparent;
+    --bs-table-color: #dcefeb;
+    --bs-table-border-color: rgba(148, 211, 203, 0.18);
+    --bs-table-hover-bg: rgba(45, 212, 191, 0.055);
+    --bs-table-hover-color: #f6fffd;
+    --bs-table-striped-bg: rgba(255, 255, 255, 0.025);
+    --bs-table-striped-color: #dcefeb;
+    --bs-table-accent-bg: transparent;
+}
+
+    :root[data-theme="dark"] .baykus-table thead th {
+        background: rgba(45, 212, 191, 0.055);
+        color: #b7d7d2;
+        border-bottom-color: rgba(148, 211, 203, 0.18);
+    }
+
+    :root[data-theme="dark"] .baykus-table tbody td {
+        background: rgba(13, 36, 33, 0.96);
+        color: #dcefeb;
+        border-color: rgba(148, 211, 203, 0.16);
+    }
+
+        :root[data-theme="dark"] .baykus-table tbody td strong {
+            color: #f6fffd;
+        }
+
+/* FIX importante: filas feriado/fin de semana */
+.baykus-row-soft,
+.baykus-table tbody tr.baykus-row-soft td {
+    background-color: var(--baykus-row-soft);
+}
+
+:root[data-theme="dark"] .baykus-table tbody tr.baykus-row-soft,
+:root[data-theme="dark"] .baykus-table tbody tr.baykus-row-soft > *,
+:root[data-theme="dark"] .baykus-table tbody tr.baykus-row-soft td {
+    background-color: rgba(255, 255, 255, 0.035) !important;
+    color: #cfe7e3 !important;
+    box-shadow: none !important;
+}
+
+    :root[data-theme="dark"] .baykus-table tbody tr.baykus-row-soft td strong {
+        color: #eafffb !important;
+    }
+
+    :root[data-theme="dark"] .baykus-table tbody tr:hover > *,
+    :root[data-theme="dark"] .baykus-table tbody tr.baykus-row-soft:hover > * {
+        background-color: rgba(45, 212, 191, 0.07) !important;
+        color: #f6fffd !important;
+        box-shadow: none !important;
+    }
+
+:root[data-theme="dark"] .baykus-table tbody td.text-muted {
+    color: #9fc8c2 !important;
+}
+
+/* Mini badges para tipo de día */
+
+.baykus-mini-badge {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 999px;
+    padding: 0.35rem 0.65rem;
+    font-size: 0.74rem;
+    font-weight: 850;
+    line-height: 1;
+    border: 1px solid transparent;
+}
+
+/* Light */
+.mini-success {
+    background: #dcfce7;
+    color: #166534;
+    border-color: #bbf7d0;
+}
+
+.mini-muted {
+    background: #f1f5f9;
+    color: #475569;
+    border-color: #e2e8f0;
+}
+
+.mini-danger {
+    background: #fee2e2;
+    color: #991b1b;
+    border-color: #fecaca;
+}
+
+.mini-warning {
+    background: #fef3c7;
+    color: #92400e;
+    border-color: #fde68a;
+}
+
+.mini-info {
+    background: #e0f2fe;
+    color: #0369a1;
+    border-color: #bae6fd;
+}
+
+.mini-primary {
+    background: var(--baykus-primary-soft);
+    color: var(--baykus-primary-dark);
+    border-color: rgba(15, 118, 110, 0.22);
+}
+
+/* Dark */
+:root[data-theme="dark"] .mini-success {
+    background: rgba(34, 197, 94, 0.14);
+    color: #86efac;
+    border-color: rgba(34, 197, 94, 0.30);
+}
+
+:root[data-theme="dark"] .mini-muted {
+    background: rgba(148, 163, 184, 0.12);
+    color: #cbd5e1;
+    border-color: rgba(148, 163, 184, 0.26);
+}
+
+:root[data-theme="dark"] .mini-danger {
+    background: rgba(239, 68, 68, 0.15);
+    color: #fca5a5;
+    border-color: rgba(239, 68, 68, 0.32);
+}
+
+:root[data-theme="dark"] .mini-warning {
+    background: rgba(245, 158, 11, 0.16);
+    color: #fbbf24;
+    border-color: rgba(245, 158, 11, 0.34);
+}
+
+:root[data-theme="dark"] .mini-info {
+    background: rgba(14, 165, 233, 0.15);
+    color: #7dd3fc;
+    border-color: rgba(14, 165, 233, 0.32);
+}
+
+:root[data-theme="dark"] .mini-primary {
+    background: rgba(139, 92, 246, 0.16);
+    color: #c4b5fd;
+    border-color: rgba(139, 92, 246, 0.34);
+}
+
+/* Observaciones e historial */
+
+.baykus-note-box {
+    background: var(--baykus-surface-soft);
+    border: 1px solid var(--baykus-border);
+    color: var(--baykus-text);
+}
+
+:root[data-theme="dark"] .baykus-note-box {
+    background: rgba(255, 255, 255, 0.035);
+    border-color: rgba(148, 211, 203, 0.18);
+    color: #dcefeb;
+}
+
+.baykus-timeline-item strong {
+    color: var(--baykus-heading);
+}
+
+.baykus-timeline-item p {
+    color: var(--baykus-text);
+}
+
+:root[data-theme="dark"] .baykus-timeline-dot {
+    background: #2dd4bf;
+    box-shadow: 0 0 0 4px rgba(45, 212, 191, 0.10);
+}
+
+:root[data-theme="dark"] .baykus-timeline-item strong {
+    color: #f6fffd;
+}
+
+:root[data-theme="dark"] .baykus-timeline-item p {
+    color: #dcefeb;
+}
+
+/* Alertas */
+
+:root[data-theme="dark"] .alert-success {
+    background: rgba(34, 197, 94, 0.13);
+    color: #bbf7d0;
+    border-color: rgba(34, 197, 94, 0.32);
+}
+
+:root[data-theme="dark"] .alert-danger {
+    background: rgba(239, 68, 68, 0.13);
+    color: #fecaca;
+    border-color: rgba(239, 68, 68, 0.32);
+}
+
+/* Modal rechazo */
+
+.baykus-modal {
+    background: var(--baykus-card);
+    color: var(--baykus-text);
+    border: 1px solid var(--baykus-border);
+}
+
+    .baykus-modal .modal-header,
+    .baykus-modal .modal-footer {
+        border-color: var(--baykus-border);
+    }
+
+    .baykus-modal .modal-title {
+        color: var(--baykus-heading);
+        font-weight: 850;
+    }
+
+:root[data-theme="dark"] .baykus-modal {
+    background: #0d2421;
+    color: #dcefeb;
+    border-color: rgba(148, 211, 203, 0.20);
+    box-shadow: 0 24px 70px rgba(0, 0, 0, 0.44);
+}
+
+    :root[data-theme="dark"] .baykus-modal .modal-title {
+        color: #f6fffd;
+    }
+
+    :root[data-theme="dark"] .baykus-modal .modal-header,
+    :root[data-theme="dark"] .baykus-modal .modal-footer {
+        border-color: rgba(148, 211, 203, 0.18);
+    }
+
+    :root[data-theme="dark"] .baykus-modal textarea.form-control {
+        background-color: #081c1a;
+        color: #e5f4f1;
+        border-color: rgba(148, 211, 203, 0.24);
+    }
+
+        :root[data-theme="dark"] .baykus-modal textarea.form-control::placeholder {
+            color: #7fa39d;
+        }
+
+:root[data-theme="dark"] .btn-close {
+    filter: invert(1) grayscale(100%);
+    opacity: 0.75;
+}
+.btn-baykus-secondary {
+    border-radius: 999px;
+    border: 1px solid var(--baykus-border);
+    background: var(--baykus-surface);
+    color: var(--baykus-primary-dark);
+    font-weight: 800;
+    padding: 0.55rem 1rem;
+    transition: all 0.18s ease;
+}
+
+    .btn-baykus-secondary:hover,
+    .btn-baykus-secondary:focus {
+        background: var(--baykus-primary-soft);
+        border-color: var(--baykus-primary);
+        color: var(--baykus-primary-dark);
+        transform: translateY(-1px);
+    }
+
+:root[data-theme="dark"] .btn-baykus-secondary {
+    background: rgba(255, 255, 255, 0.035);
+    color: #5eead4;
+    border-color: rgba(45, 212, 191, 0.28);
+}
+
+    :root[data-theme="dark"] .btn-baykus-secondary:hover,
+    :root[data-theme="dark"] .btn-baykus-secondary:focus {
+        background: rgba(45, 212, 191, 0.12);
+        color: #99f6e4;
+        border-color: rgba(45, 212, 191, 0.45);
+    }

@@ -15,22 +15,38 @@
             return false;
         }
 
-        path = path.ToLower();
-
-        if (path.EndsWith("/index"))
+        string NormalizePath(string value)
         {
-            path = path[..^6];
+            value = value.Trim().ToLower();
+
+            if (!value.StartsWith("/"))
+            {
+                value = "/" + value;
+            }
+
+            if (value.EndsWith("/index"))
+            {
+                value = value[..^6];
+
+                if (string.IsNullOrWhiteSpace(value))
+                {
+                    value = "/";
+                }
+            }
+
+            return value;
         }
 
-        var pathActual = currentPath;
+        var pathMenu = NormalizePath(path);
+        var pathActual = NormalizePath(currentPath);
 
-        if (pathActual.EndsWith("/index"))
+        if (pathMenu == "/")
         {
-            pathActual = pathActual[..^6];
+            return pathActual == "/";
         }
 
-        return pathActual == path || pathActual.StartsWith(path + "/");
-    }
+        return pathActual == pathMenu || pathActual.StartsWith(pathMenu + "/");
+    };
 
     string ObtenerUrlMenu(MenuUsuarioDto menu)
     {
@@ -74,12 +90,27 @@
 }
 
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" data-theme="light">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <title>@ViewData["Title"] - Baykus</title>
+
+    <script>
+            (function () {
+                try {
+                    var savedTheme = localStorage.getItem("baykus-theme");
+                    var theme = savedTheme === "dark" || savedTheme === "light"
+                        ? savedTheme
+                        : "light";
+
+                    document.documentElement.setAttribute("data-theme", theme);
+                } catch {
+                    document.documentElement.setAttribute("data-theme", "light");
+                }
+            })();
+    </script>
 
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
@@ -166,6 +197,15 @@
                             <div class="user-name">@User.Identity?.Name</div>
                             <div class="user-role">Usuario activo</div>
                         </div>
+
+                        <button type="button"
+                                id="themeToggle"
+                                class="btn btn-baykus-theme"
+                                aria-label="Cambiar tema"
+                                title="Cambiar tema">
+                            <span class="theme-toggle-icon" aria-hidden="true">🌙</span>
+                            <span class="theme-toggle-text">Oscuro</span>
+                        </button>
 
                         <form class="logout-form"
                               asp-area="Identity"
