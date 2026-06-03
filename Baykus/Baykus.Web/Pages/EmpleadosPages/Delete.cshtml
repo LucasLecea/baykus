@@ -119,13 +119,13 @@
     <form method="post">
         <input type="hidden" asp-for="Empleado.Id" />
 
-        <div class="baykus-form-actions delete-actions">
-            <a asp-page="./Index" asp-route-id="@Model.Empleado.Id" class="btn btn-outline-secondary btn-baykus-secondary">
+        <div class="form-actions">
+            <a asp-page="./Index" asp-route-id="@Model.Empleado.Id" class="btn btn-outline-secondary btn-form">
                 Cancelar
             </a>
 
-            <button type="submit" class="btn btn-baykus-danger">
-                Sí, eliminar empleado
+            <button type="submit" class="btn-baykus-danger">
+                Eliminar empleado
             </button>
         </div>
     </form>

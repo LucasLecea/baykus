@@ -87,24 +87,30 @@
                                     </span>
                                 </td>
 
-                                <td>
+                                <td class="text-end acciones-cell">
                                     <div class="acciones-tabla">
                                         <a asp-page="./Details"
                                            asp-route-id="@item.Id"
-                                           class="btn btn-sm btn-outline-secondary">
-                                            Ver
+                                           class="btn-icon-action action-view"
+                                           title="Ver detalle"
+                                           aria-label="Ver detalle">
+                                            <i class="bi bi-eye-fill"></i>
                                         </a>
 
                                         <a asp-page="./Edit"
                                            asp-route-id="@item.Id"
-                                           class="btn btn-sm btn-outline-primary">
-                                            Editar
+                                           class="btn-icon-action action-edit"
+                                           title="Editar empleado"
+                                           aria-label="Editar empleado">
+                                            <i class="bi bi-pencil-fill"></i>
                                         </a>
 
                                         <a asp-page="./Delete"
                                            asp-route-id="@item.Id"
-                                           class="btn btn-sm btn-outline-danger">
-                                            Eliminar
+                                           class="btn-icon-action action-delete"
+                                           title="Eliminar empleado"
+                                           aria-label="Eliminar empleado">
+                                            <i class="bi bi-trash-fill"></i>
                                         </a>
                                     </div>
                                 </td>

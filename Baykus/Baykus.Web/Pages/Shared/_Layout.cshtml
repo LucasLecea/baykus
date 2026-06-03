@@ -87,6 +87,12 @@
             menuUsuario = await MenuUsuarioService.ObtenerMenuUsuarioAsync(applicationUserId);
         }
     }
+
+    bool EsBootstrapIcon(string? icono)
+    {
+        return !string.IsNullOrWhiteSpace(icono)
+               && icono.Trim().StartsWith("bi ", StringComparison.OrdinalIgnoreCase);
+    }
 }
 
 <!DOCTYPE html>
@@ -115,6 +121,7 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/baykus.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 </head>
 
 <body>
@@ -124,7 +131,17 @@
 
             <aside class="baykus-sidebar">
                 <div class="sidebar-brand">
-                    <img src="~/img/logo-baykus.png" alt="Baykus Sistema" class="sidebar-logo" />
+                    <img src="~/img/logo-baykus.png"
+                         alt="Baykus Sistema"
+                         class="sidebar-logo sidebar-logo-full" />
+
+                    <button type="button"
+                            id="sidebarToggle"
+                            class="sidebar-collapse-toggle"
+                            aria-label="Minimizar menú"
+                            title="Minimizar menú">
+                        <i class="bi bi-chevron-left"></i>
+                    </button>
                 </div>
 
                 <nav class="sidebar-menu">
@@ -151,9 +168,22 @@
                                             data-bs-target="#@collapseId"
                                             aria-expanded="@(menuActivo.ToString().ToLower())"
                                             aria-controls="@collapseId">
-                                        <span class="sidebar-icon">@(menu.Icono ?? "•")</span>
-                                        <span>@menu.Nombre</span>
-                                        <span class="sidebar-chevron">⌄</span>
+                                        <span class="sidebar-icon">
+                                            @if (EsBootstrapIcon(menu.Icono))
+                                            {
+                                                <i class="@menu.Icono"></i>
+                                            }
+                                            else
+                                            {
+                                                <span>@(menu.Icono ?? "•")</span>
+                                            }
+                                        </span>
+
+                                        <span class="sidebar-label">@menu.Nombre</span>
+
+                                        <span class="sidebar-chevron">
+                                            <i class="bi bi-chevron-down"></i>
+                                        </span>
                                     </button>
 
                                     <div class="collapse sidebar-submenu @(menuActivo ? "show" : "")" id="@collapseId">
@@ -161,8 +191,18 @@
                                         {
                                             <a class="sidebar-sublink @(IsActive(hijo.Page) ? "active" : "")"
                                                href="@ObtenerUrlMenu(hijo)">
-                                                <span class="sidebar-dot"></span>
-                                                <span>@hijo.Nombre</span>
+                                                <span class="sidebar-icon sidebar-subicon">
+                                                    @if (EsBootstrapIcon(hijo.Icono))
+                                                    {
+                                                        <i class="@hijo.Icono"></i>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span class="sidebar-dot"></span>
+                                                    }
+                                                </span>
+
+                                                <span class="sidebar-label">@hijo.Nombre</span>
                                             </a>
                                         }
                                     </div>
@@ -172,8 +212,18 @@
                             {
                                 <a class="sidebar-link @(IsActive(menu.Page) ? "active" : "")"
                                    href="@ObtenerUrlMenu(menu)">
-                                    <span class="sidebar-icon">@(menu.Icono ?? "•")</span>
-                                    <span>@menu.Nombre</span>
+                                    <span class="sidebar-icon">
+                                        @if (EsBootstrapIcon(menu.Icono))
+                                        {
+                                            <i class="@menu.Icono"></i>
+                                        }
+                                        else
+                                        {
+                                            <span>@(menu.Icono ?? "•")</span>
+                                        }
+                                    </span>
+
+                                    <span class="sidebar-label">@menu.Nombre</span>
                                 </a>
                             }
                         }
@@ -232,9 +282,49 @@
         </main>
     }
 
+    <style>
+            
+    </style>
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+            const app = document.querySelector(".baykus-app");
+            const toggle = document.getElementById("sidebarToggle");
+
+            if (!app || !toggle) {
+            return;
+            }
+
+            const icon = toggle.querySelector("i");
+
+            function setCollapsed(isCollapsed) {
+            app.classList.toggle("sidebar-collapsed", isCollapsed);
+            localStorage.setItem("baykus-sidebar-collapsed", isCollapsed ? "true" : "false");
+
+            toggle.setAttribute("title", isCollapsed ? "Expandir menú" : "Minimizar menú");
+            toggle.setAttribute("aria-label", isCollapsed ? "Expandir menú" : "Minimizar menú");
+
+            if (icon) {
+            icon.className = isCollapsed ? "bi bi-chevron-right" : "bi bi-chevron-left";
+            }
+            }
+
+            const savedState = localStorage.getItem("baykus-sidebar-collapsed") === "true";
+            setCollapsed(savedState);
+
+            toggle.addEventListener("click", function (event) {
+            event.preventDefault();
+            event.stopPropagation();
+
+            const isCollapsed = app.classList.contains("sidebar-collapsed");
+            setCollapsed(!isCollapsed);
+            });
+            });
+        </script>
 
     @await RenderSectionAsync("Scripts", required: false)
 </body>

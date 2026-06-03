@@ -1,11 +1,60 @@
 ﻿@page
 @model IndexModel
+
 @{
     ViewData["Title"] = "Dashboard";
 }
 
+<section class="dashboard-hero mb-4">
+    <div>
+        <div class="dashboard-kicker">Sistema integral de gestión empresarial</div>
+
+        <h1>Gestioná tu empresa desde un solo lugar</h1>
+
+        <p>
+            Baykus centraliza empleados, documentación, planillas horarias,
+            procesos internos y configuración por perfiles en una plataforma clara,
+            segura y escalable.
+        </p>
+
+        <div class="dashboard-hero-actions">
+            <a asp-page="/Empleados/Index" class="btn btn-primary btn-nuevo">
+                Ver empleados
+            </a>
+
+            <a asp-page="/Empleados/Create" class="btn btn-baykus-secondary">
+                + Nuevo empleado
+            </a>
+        </div>
+    </div>
+
+    <div class="dashboard-hero-panel">
+        <div class="hero-panel-title">Estado general</div>
+
+        <div class="hero-panel-item">
+            <span>RRHH</span>
+            <strong>Activo</strong>
+        </div>
+
+        <div class="hero-panel-item">
+            <span>Documentación</span>
+            <strong>En desarrollo</strong>
+        </div>
+
+        <div class="hero-panel-item">
+            <span>Planillas horarias</span>
+            <strong>Activo</strong>
+        </div>
+
+        <div class="hero-panel-item">
+            <span>IA local</span>
+            <strong>Próximamente</strong>
+        </div>
+    </div>
+</section>
+
 <div class="row g-4 mb-4">
-    <div class="col-md-4">
+    <div class="col-xl-3 col-md-6">
         <div class="baykus-stat">
             <div class="baykus-stat-label">Empleados activos</div>
             <div class="baykus-stat-value">0</div>
@@ -13,27 +62,171 @@
         </div>
     </div>
 
-    <div class="col-md-4">
+    <div class="col-xl-3 col-md-6">
         <div class="baykus-stat">
-            <div class="baykus-stat-label">Módulos activos</div>
-            <div class="baykus-stat-value">3</div>
-            <div class="baykus-stat-help">Funcionalidades disponibles</div>
+            <div class="baykus-stat-label">Módulos disponibles</div>
+            <div class="baykus-stat-value">5</div>
+            <div class="baykus-stat-help">Funcionalidades listas o en desarrollo</div>
         </div>
     </div>
 
-    <div class="col-md-4">
+    <div class="col-xl-3 col-md-6">
         <div class="baykus-stat">
-            <div class="baykus-stat-label">Usuarios</div>
+            <div class="baykus-stat-label">Documentos</div>
+            <div class="baykus-stat-value">0</div>
+            <div class="baykus-stat-help">Archivos asociados a empleados y procesos</div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6">
+        <div class="baykus-stat">
+            <div class="baykus-stat-label">Usuarios del sistema</div>
             <div class="baykus-stat-value">1</div>
-            <div class="baykus-stat-help">Usuarios con acceso al sistema</div>
+            <div class="baykus-stat-help">Cuentas con acceso configurado</div>
         </div>
     </div>
 </div>
 
-<div class="baykus-card">
-    <div class="baykus-card-title">Bienvenida a Baykus</div>
-    <p class="baykus-card-text">
-        Esta es la primera versión base de la plataforma. Desde acá vamos a construir los módulos de empleados,
-        recursos humanos, planillas horarias, documentación y configuración por cliente.
-    </p>
+<div class="row g-4 mb-4">
+    <div class="col-lg-8">
+        <div class="baykus-card h-100">
+            <div class="baykus-card-title mb-3">Módulos principales</div>
+
+            <div class="dashboard-module-grid">
+                <a asp-page="/Empleados/Index" class="dashboard-module-card">
+                    <div class="module-icon">👥</div>
+                    <div>
+                        <strong>Recursos Humanos</strong>
+                        <span>Alta, edición y gestión de empleados, puestos y sectores.</span>
+                    </div>
+                </a>
+
+                <a href="#" class="dashboard-module-card">
+                    <div class="module-icon">🕒</div>
+                    <div>
+                        <strong>Planillas horarias</strong>
+                        <span>Seguimiento de horarios, asistencia y revisión de planillas.</span>
+                    </div>
+                </a>
+
+                <a href="#" class="dashboard-module-card">
+                    <div class="module-icon">📁</div>
+                    <div>
+                        <strong>Documentación</strong>
+                        <span>Gestión de archivos, vencimientos y documentación interna.</span>
+                    </div>
+                </a>
+
+                <a href="#" class="dashboard-module-card">
+                    <div class="module-icon">⚙️</div>
+                    <div>
+                        <strong>Perfiles y permisos</strong>
+                        <span>Control de accesos según rol, área o responsabilidad.</span>
+                    </div>
+                </a>
+
+                <a href="#" class="dashboard-module-card">
+                    <div class="module-icon">🎯</div>
+                    <div>
+                        <strong>Objetivos y seguimiento</strong>
+                        <span>Indicadores, metas, avances y control de gestión.</span>
+                    </div>
+                </a>
+
+                <a href="#" class="dashboard-module-card">
+                    <div class="module-icon">🤖</div>
+                    <div>
+                        <strong>Automatizaciones e IA</strong>
+                        <span>Asistencia inteligente para reducir tareas manuales.</span>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="baykus-card h-100">
+            <div class="baykus-card-title mb-3">Accesos rápidos</div>
+
+            <div class="dashboard-quick-actions">
+                <a asp-page="/Empleados/Create" class="dashboard-quick-action">
+                    <span>＋</span>
+                    Nuevo empleado
+                </a>
+
+                <a asp-page="/Empleados/Index" class="dashboard-quick-action">
+                    <span>👥</span>
+                    Ver empleados
+                </a>
+
+                <a href="#" class="dashboard-quick-action">
+                    <span>📄</span>
+                    Cargar documento
+                </a>
+
+                <a href="#" class="dashboard-quick-action">
+                    <span>⚙️</span>
+                    Configurar perfiles
+                </a>
+            </div>
+        </div>
+    </div>
 </div>
+
+<div class="row g-4">
+    <div class="col-lg-7">
+        <div class="baykus-card h-100">
+            <div class="baykus-card-title mb-3">Actividad reciente</div>
+
+            <div class="dashboard-timeline">
+                <div class="dashboard-timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div>
+                        <strong>Bienvenida a Baykus</strong>
+                        <p>La plataforma base ya está lista para comenzar a cargar información real.</p>
+                    </div>
+                </div>
+
+                <div class="dashboard-timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div>
+                        <strong>Módulo de empleados disponible</strong>
+                        <p>Ya podés gestionar empleados, puestos y sectores desde ABMs.</p>
+                    </div>
+                </div>
+
+                <div class="dashboard-timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div>
+                        <strong>Próximos módulos</strong>
+                        <p>Documentación, planillas, perfiles y automatizaciones se integrarán progresivamente.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-5">
+        <div class="baykus-card h-100 dashboard-sales-card">
+            <div class="dashboard-kicker">Por qué Baykus</div>
+
+            <h2>Una plataforma preparada para crecer con cada empresa</h2>
+
+            <p>
+                Baykus permite ordenar procesos internos, centralizar información sensible,
+                reducir tareas repetitivas y adaptar la gestión según las necesidades de cada cliente.
+            </p>
+
+            <div class="dashboard-sales-list">
+                <span>✔ Gestión centralizada</span>
+                <span>✔ Diseño moderno y responsive</span>
+                <span>✔ Roles, perfiles y permisos</span>
+                <span>✔ Preparado para automatizaciones</span>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+
+    
+</style>
