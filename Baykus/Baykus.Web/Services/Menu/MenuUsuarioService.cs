@@ -52,10 +52,6 @@ namespace Baykus.Web.Services.Menu
                 })
                 .ToListAsync();
 
-            /*
-             * Si un usuario tiene más de un perfil, puede traer el mismo menú repetido.
-             * Por eso agrupamos por menú y consolidamos permisos.
-             */
             var menusUnicos = menus
                 .GroupBy(m => m.Id)
                 .Select(g => new MenuUsuarioDto
@@ -80,6 +76,49 @@ namespace Baykus.Web.Services.Menu
                 .OrderBy(m => m.Orden)
                 .ToList();
 
+            var idsPadresFaltantes = menusUnicos
+                .Where(m => m.MenuPadreId != null)
+                .Select(m => m.MenuPadreId!.Value)
+                .Distinct()
+                .Where(idPadre => !menusUnicos.Any(m => m.Id == idPadre))
+                .ToList();
+
+            if (idsPadresFaltantes.Any())
+            {
+                var padresFaltantes = await _context.MenusSistema
+                    .AsNoTracking()
+                    .Where(m =>
+                        idsPadresFaltantes.Contains(m.Id) &&
+                        m.Activo &&
+                        m.EsVisible)
+                    .Select(m => new MenuUsuarioDto
+                    {
+                        Id = m.Id,
+                        MenuPadreId = m.MenuPadreId,
+                        Nombre = m.Nombre,
+                        Codigo = m.Codigo,
+                        Icono = m.Icono,
+                        Url = m.Url,
+                        Page = m.Page,
+                        Area = m.Area,
+                        Orden = m.Orden,
+
+                        PuedeVer = true,
+                        PuedeCrear = false,
+                        PuedeEditar = false,
+                        PuedeEliminar = false,
+                        PuedeAprobar = false,
+                        PuedeRevisar = false
+                    })
+                    .ToListAsync();
+
+                menusUnicos.AddRange(padresFaltantes);
+
+                menusUnicos = menusUnicos
+                    .OrderBy(m => m.Orden)
+                    .ToList();
+            }
+
             var padres = menusUnicos
                 .Where(m => m.MenuPadreId == null)
                 .OrderBy(m => m.Orden)
@@ -93,11 +132,6 @@ namespace Baykus.Web.Services.Menu
                     .ToList();
             }
 
-            /*
-             * Evita mostrar grupos vacíos.
-             * Ejemplo: si el usuario no tiene ningún hijo visible dentro de ABMs,
-             * no mostramos ABMs.
-             */
             padres = padres
                 .Where(m => !string.IsNullOrWhiteSpace(m.Page)
                          || !string.IsNullOrWhiteSpace(m.Url)

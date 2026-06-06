@@ -223,20 +223,21 @@
 
         <div class="row g-4">
             <div class="col-md-6">
-                <label asp-for="PerfilSeleccionadoId" class="form-label baykus-label">
-                    Perfil de acceso
+                <label asp-for="PerfilesSeleccionadosIds" class="form-label baykus-label">
+                    Perfiles de acceso
                 </label>
 
-                <select asp-for="PerfilSeleccionadoId"
+                <select asp-for="PerfilesSeleccionadosIds"
                         asp-items="Model.PerfilesSelectList"
-                        class="form-select baykus-input">
-                    <option value="">Sin perfil asignado</option>
+                        class="form-select baykus-input baykus-select2"
+                        multiple="multiple"
+                        id="perfilesSelect">
                 </select>
 
-                <span asp-validation-for="PerfilSeleccionadoId" class="text-danger small"></span>
+                <span asp-validation-for="PerfilesSeleccionadosIds" class="text-danger small"></span>
 
                 <p class="text-muted small mt-2 mb-0">
-                    El perfil define qué menús y acciones podrá usar el empleado.
+                    Podés asignar uno o varios perfiles. Cada perfil habilita sus módulos correspondientes.
                 </p>
             </div>
 
@@ -304,6 +305,20 @@
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
 
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $('#perfilesSelect').select2({
+                placeholder: 'Seleccionar perfiles',
+                width: '100%',
+                closeOnSelect: false
+            });
+        });
+    </script>
+
     <script>
         const puestos = @Html.Raw(Model.PuestosJson);
 
@@ -314,45 +329,39 @@
 
         function cargarPuestosPorSector(mantenerSeleccion = false) {
             const sectorId = sectorSelect.value;
-
+            
             puestoSelect.innerHTML = "";
-
             if (!sectorId) {
                 puestoSelect.disabled = true;
-
+                
                 const option = document.createElement("option");
                 option.value = "";
                 option.textContent = "Primero seleccioná un sector";
                 puestoSelect.appendChild(option);
-
                 return;
             }
-
             const puestosFiltrados = puestos.filter(p => p.sectorId == sectorId);
-
             const optionDefault = document.createElement("option");
+            
             optionDefault.value = "";
             optionDefault.textContent = puestosFiltrados.length > 0
-                ? "Seleccionar puesto"
-                : "No hay puestos cargados para este sector";
-
+            ? "Seleccionar puesto"
+            : "No hay puestos cargados para este sector";
+            
             puestoSelect.appendChild(optionDefault);
-
+            
             puestosFiltrados.forEach(puesto => {
                 const option = document.createElement("option");
                 option.value = puesto.id;
                 option.textContent = puesto.nombre;
-
+                
                 if (mantenerSeleccion && puestoSeleccionadoInicial && puestoSeleccionadoInicial == puesto.id) {
                     option.selected = true;
                 }
-
                 puestoSelect.appendChild(option);
             });
-
             puestoSelect.disabled = puestosFiltrados.length === 0;
         }
-
         sectorSelect.addEventListener("change", function () {
             cargarPuestosPorSector(false);
         });

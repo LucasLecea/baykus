@@ -26,14 +26,14 @@ public class EditModel : PageModel
     public Empleado Empleado { get; set; } = default!;
 
     [BindProperty]
-    public int? PerfilSeleccionadoId { get; set; }
+    public List<int> PerfilesSeleccionadosIds { get; set; } = new();
 
     [BindProperty]
     public bool CrearUsuarioAcceso { get; set; }
 
     public SelectList PuestosSelectList { get; set; } = default!;
     public SelectList SectoresSelectList { get; set; } = default!;
-    public SelectList PerfilesSelectList { get; set; } = default!;
+    public MultiSelectList PerfilesSelectList { get; set; } = default!;
 
     public string PuestosJson { get; set; } = "[]";
 
@@ -66,16 +66,16 @@ public class EditModel : PageModel
 
         Empleado = empleado;
 
-        PerfilSeleccionadoId = await _context.EmpleadoPerfiles
+        PerfilesSeleccionadosIds = await _context.EmpleadoPerfiles
             .Where(ep => ep.EmpleadoId == Empleado.Id && ep.Activo)
-            .Select(ep => (int?)ep.PerfilId)
-            .FirstOrDefaultAsync();
+            .Select(ep => ep.PerfilId)
+            .ToListAsync();
 
         TieneUsuarioAcceso = !string.IsNullOrWhiteSpace(Empleado.ApplicationUserId);
         UsuarioAccesoEmail = Empleado.ApplicationUser?.Email;
 
         await CargarCombosAsync(Empleado.SectorId, Empleado.PuestoId);
-        await CargarPerfilesAsync(PerfilSeleccionadoId);
+        await CargarPerfilesAsync(PerfilesSeleccionadosIds);
 
         return Page();
     }
@@ -106,9 +106,9 @@ public class EditModel : PageModel
             }
         }
 
-        if (CrearUsuarioAcceso && PerfilSeleccionadoId == null)
+        if (CrearUsuarioAcceso && !PerfilesSeleccionadosIds.Any())
         {
-            ModelState.AddModelError("PerfilSeleccionadoId", "Debe seleccionar un perfil para crear el usuario de acceso.");
+            ModelState.AddModelError("PerfilesSeleccionadosIds", "Debe seleccionar al menos un perfil para crear el usuario de acceso.");
         }
 
         if (CrearUsuarioAcceso && string.IsNullOrWhiteSpace(Empleado.Email))
@@ -133,7 +133,7 @@ public class EditModel : PageModel
             UsuarioAccesoEmail = empleadoDb.ApplicationUser?.Email;
 
             await CargarCombosAsync(Empleado.SectorId, Empleado.PuestoId);
-            await CargarPerfilesAsync(PerfilSeleccionadoId);
+            await CargarPerfilesAsync(PerfilesSeleccionadosIds);
 
             return Page();
         }
@@ -152,54 +152,56 @@ public class EditModel : PageModel
             empleadoDb.FechaIngreso = Empleado.FechaIngreso;
             empleadoDb.Activo = Empleado.Activo;
 
-            if (PerfilSeleccionadoId.HasValue)
-            {
-                var perfilExiste = await _context.Perfiles
-                    .AnyAsync(p => p.Id == PerfilSeleccionadoId.Value && p.Activo);
+            var perfilesSeleccionadosLimpios = PerfilesSeleccionadosIds.Distinct().ToList();
 
-                if (!perfilExiste)
+            if (perfilesSeleccionadosLimpios.Any())
+            {
+                var perfilesValidosIds = await _context.Perfiles
+                    .Where(p => perfilesSeleccionadosLimpios.Contains(p.Id) && p.Activo)
+                    .Select(p => p.Id)
+                    .ToListAsync();
+
+                if (perfilesValidosIds.Count != perfilesSeleccionadosLimpios.Count)
                 {
-                    ModelState.AddModelError("PerfilSeleccionadoId", "El perfil seleccionado no existe o está inactivo.");
+                    ModelState.AddModelError("PerfilesSeleccionadosIds", "Uno o más perfiles seleccionados no existen o están inactivos.");
 
                     Empleado.ApplicationUserId = empleadoDb.ApplicationUserId;
                     TieneUsuarioAcceso = !string.IsNullOrWhiteSpace(empleadoDb.ApplicationUserId);
                     UsuarioAccesoEmail = empleadoDb.ApplicationUser?.Email;
 
                     await CargarCombosAsync(Empleado.SectorId, Empleado.PuestoId);
-                    await CargarPerfilesAsync(PerfilSeleccionadoId);
+                    await CargarPerfilesAsync(PerfilesSeleccionadosIds);
 
                     return Page();
                 }
+            }
 
-                var perfilesActuales = await _context.EmpleadoPerfiles
-                    .Where(ep => ep.EmpleadoId == empleadoDb.Id && ep.Activo)
-                    .ToListAsync();
+            var relacionesActuales = await _context.EmpleadoPerfiles
+                .Where(ep => ep.EmpleadoId == empleadoDb.Id)
+                .ToListAsync();
 
-                foreach (var perfilActual in perfilesActuales)
+            foreach (var relacionActual in relacionesActuales)
+            {
+                relacionActual.Activo = perfilesSeleccionadosLimpios.Contains(relacionActual.PerfilId);
+            }
+
+            var perfilesActualesIds = relacionesActuales
+                .Select(ep => ep.PerfilId)
+                .ToList();
+
+            var perfilesNuevosIds = perfilesSeleccionadosLimpios
+                .Where(perfilId => !perfilesActualesIds.Contains(perfilId))
+                .ToList();
+
+            foreach (var perfilNuevoId in perfilesNuevosIds)
+            {
+                _context.EmpleadoPerfiles.Add(new EmpleadoPerfil
                 {
-                    perfilActual.Activo = false;
-                }
-
-                var relacionExistente = await _context.EmpleadoPerfiles
-                    .FirstOrDefaultAsync(ep =>
-                        ep.EmpleadoId == empleadoDb.Id &&
-                        ep.PerfilId == PerfilSeleccionadoId.Value);
-
-                if (relacionExistente is null)
-                {
-                    _context.EmpleadoPerfiles.Add(new EmpleadoPerfil
-                    {
-                        EmpleadoId = empleadoDb.Id,
-                        PerfilId = PerfilSeleccionadoId.Value,
-                        Activo = true,
-                        FechaAsignacion = DateTime.Now
-                    });
-                }
-                else
-                {
-                    relacionExistente.Activo = true;
-                    relacionExistente.FechaAsignacion = DateTime.Now;
-                }
+                    EmpleadoId = empleadoDb.Id,
+                    PerfilId = perfilNuevoId,
+                    Activo = true,
+                    FechaAsignacion = DateTime.Now
+                });
             }
 
             if (CrearUsuarioAcceso && string.IsNullOrWhiteSpace(empleadoDb.ApplicationUserId))
@@ -224,7 +226,7 @@ public class EditModel : PageModel
                         UsuarioAccesoEmail = empleadoDb.ApplicationUser?.Email;
 
                         await CargarCombosAsync(Empleado.SectorId, Empleado.PuestoId);
-                        await CargarPerfilesAsync(PerfilSeleccionadoId);
+                        await CargarPerfilesAsync(PerfilesSeleccionadosIds);
 
                         return Page();
                     }
@@ -256,7 +258,7 @@ public class EditModel : PageModel
                         UsuarioAccesoEmail = empleadoDb.ApplicationUser?.Email;
 
                         await CargarCombosAsync(Empleado.SectorId, Empleado.PuestoId);
-                        await CargarPerfilesAsync(PerfilSeleccionadoId);
+                        await CargarPerfilesAsync(PerfilesSeleccionadosIds);
 
                         return Page();
                     }
@@ -322,15 +324,22 @@ public class EditModel : PageModel
         PuestosJson = JsonSerializer.Serialize(puestos);
     }
 
-    private async Task CargarPerfilesAsync(int? perfilSeleccionadoId = null)
+    private async Task CargarPerfilesAsync(List<int>? perfilesSeleccionadosIds = null)
     {
+        perfilesSeleccionadosIds ??= new List<int>();
+
         var perfiles = await _context.Perfiles
             .AsNoTracking()
             .Where(p => p.Activo)
             .OrderBy(p => p.Nombre)
             .ToListAsync();
 
-        PerfilesSelectList = new SelectList(perfiles, "Id", "Nombre", perfilSeleccionadoId);
+        PerfilesSelectList = new MultiSelectList(
+            perfiles,
+            "Id",
+            "Nombre",
+            perfilesSeleccionadosIds
+        );
     }
 
     private static string GenerarPasswordTemporal()

@@ -26,14 +26,14 @@ public class CreateModel : PageModel
     public Empleado Empleado { get; set; } = new();
 
     [BindProperty]
-    public int? PerfilSeleccionadoId { get; set; }
+    public List<int> PerfilesSeleccionadosIds { get; set; } = new();
 
     [BindProperty]
     public bool CrearUsuarioAcceso { get; set; }
 
     public SelectList PuestosSelectList { get; set; } = default!;
     public SelectList SectoresSelectList { get; set; } = default!;
-    public SelectList PerfilesSelectList { get; set; } = default!;
+    public MultiSelectList PerfilesSelectList { get; set; } = default!;
 
     public string PuestosJson { get; set; } = "[]";
 
@@ -84,19 +84,25 @@ public class CreateModel : PageModel
             ModelState.AddModelError("Empleado.Email", "Debe cargar un email para crear el usuario de acceso.");
         }
 
-        if (CrearUsuarioAcceso && PerfilSeleccionadoId == null)
+        if (CrearUsuarioAcceso && !PerfilesSeleccionadosIds.Any())
         {
-            ModelState.AddModelError("PerfilSeleccionadoId", "Debe seleccionar un perfil para crear el usuario de acceso.");
+            ModelState.AddModelError("PerfilesSeleccionadosIds", "Debe seleccionar al menos un perfil para crear el usuario de acceso.");
         }
 
-        if (PerfilSeleccionadoId.HasValue)
-        {
-            var perfilExiste = await _context.Perfiles
-                .AnyAsync(p => p.Id == PerfilSeleccionadoId.Value && p.Activo);
+        var perfilesSeleccionadosLimpios = PerfilesSeleccionadosIds
+            .Distinct()
+            .ToList();
 
-            if (!perfilExiste)
+        if (perfilesSeleccionadosLimpios.Any())
+        {
+            var perfilesValidosIds = await _context.Perfiles
+                .Where(p => perfilesSeleccionadosLimpios.Contains(p.Id) && p.Activo)
+                .Select(p => p.Id)
+                .ToListAsync();
+
+            if (perfilesValidosIds.Count != perfilesSeleccionadosLimpios.Count)
             {
-                ModelState.AddModelError("PerfilSeleccionadoId", "El perfil seleccionado no existe o está inactivo.");
+                ModelState.AddModelError("PerfilesSeleccionadosIds", "Uno o más perfiles seleccionados no existen o están inactivos.");
             }
         }
 
@@ -126,7 +132,7 @@ public class CreateModel : PageModel
         if (!ModelState.IsValid)
         {
             await CargarCombosAsync(Empleado.SectorId, Empleado.PuestoId);
-            await CargarPerfilesAsync(PerfilSeleccionadoId);
+            await CargarPerfilesAsync(PerfilesSeleccionadosIds);
 
             return Page();
         }
@@ -163,7 +169,7 @@ public class CreateModel : PageModel
                     }
 
                     await CargarCombosAsync(Empleado.SectorId, Empleado.PuestoId);
-                    await CargarPerfilesAsync(PerfilSeleccionadoId);
+                    await CargarPerfilesAsync(PerfilesSeleccionadosIds);
 
                     return Page();
                 }
@@ -175,18 +181,18 @@ public class CreateModel : PageModel
             _context.Empleados.Add(Empleado);
             await _context.SaveChangesAsync();
 
-            if (PerfilSeleccionadoId.HasValue)
+            foreach (var perfilId in perfilesSeleccionadosLimpios)
             {
                 _context.EmpleadoPerfiles.Add(new EmpleadoPerfil
                 {
                     EmpleadoId = Empleado.Id,
-                    PerfilId = PerfilSeleccionadoId.Value,
+                    PerfilId = perfilId,
                     Activo = true,
                     FechaAsignacion = DateTime.Now
                 });
-
-                await _context.SaveChangesAsync();
             }
+
+            await _context.SaveChangesAsync();
 
             await transaction.CommitAsync();
 
@@ -237,15 +243,22 @@ public class CreateModel : PageModel
         PuestosJson = JsonSerializer.Serialize(puestos);
     }
 
-    private async Task CargarPerfilesAsync(int? perfilSeleccionadoId = null)
+    private async Task CargarPerfilesAsync(List<int>? perfilesSeleccionadosIds = null)
     {
+        perfilesSeleccionadosIds ??= new List<int>();
+
         var perfiles = await _context.Perfiles
             .AsNoTracking()
             .Where(p => p.Activo)
             .OrderBy(p => p.Nombre)
             .ToListAsync();
 
-        PerfilesSelectList = new SelectList(perfiles, "Id", "Nombre", perfilSeleccionadoId);
+        PerfilesSelectList = new MultiSelectList(
+            perfiles,
+            "Id",
+            "Nombre",
+            perfilesSeleccionadosIds
+        );
     }
 
     private static string GenerarPasswordTemporal()
